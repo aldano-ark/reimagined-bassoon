@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "NativeTemplate"
 include(":app")
+include(":core:designsystem")
