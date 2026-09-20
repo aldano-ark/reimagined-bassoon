@@ -2,7 +2,9 @@
 
 Date: 2026-09-20
 
-Status: Approved by the user on 2026-09-20. Implementation planning is authorized; application implementation has not started.
+Status: Approved by the user on 2026-09-20. Implementation is in progress; both native shells and their command layer have built successfully.
+
+Execution update: The user prefers Android Studio's bundled JDK for this new template while retaining JDK 17 for older projects. Gradle 9.4.1 supports launcher JDKs 17–26; the bundled JBR 25.0.3 passed Android build/lint verification. Android Studio generated project daemon criteria selecting Java 25. Keep runtime selection project-scoped and retain Java 17 bytecode compatibility. This supersedes the implementation plan's original JDK-17-only prerequisite.
 
 ## Intent and agreed scope
 

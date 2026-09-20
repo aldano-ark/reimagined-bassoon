@@ -4,11 +4,26 @@ An independent Kotlin/Jetpack Compose application. Open this directory in Androi
 
 ## Prerequisites
 
-- JDK 17. Set `JAVA_HOME` to its installation directory; configure Android Studio's Gradle JDK to match.
+- A Gradle-compatible Java launcher (17–26 for Gradle 9.4.1). Use Android Studio's bundled JBR 25 for this project. The current daemon criteria require a Java 25 runtime even if a JDK 17 launcher starts Gradle. The app's Java bytecode target stays at 17 independently of the build runtime.
 - Android SDK. Set `ANDROID_HOME` to the SDK directory and install platform `android-36` and build tools `36.0.0` using Android Studio's SDK Manager.
 - Network access for the first Gradle/dependency download. SDK licenses must already be accepted through the normal SDK setup.
 
 Machine-specific SDK locations may be stored in ignored `local.properties` for native IDE use. The shared command scripts require `ANDROID_HOME` explicitly.
+
+## Choose a project JDK
+
+Use Android Studio's bundled JDK in this project's Gradle settings. On macOS its standard location is `/Applications/Android Studio.app/Contents/jbr/Contents/Home`. Keep older projects' JDK selections unchanged.
+
+For a terminal command, select the bundled JDK just for that invocation:
+
+```sh
+JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" \
+  ./tooling/scripts/verify android
+```
+
+Run that example from the repository root with `ANDROID_HOME` already set. It does not change your shell's global `JAVA_HOME`.
+
+Recent Android Studio versions can generate `gradle/gradle-daemon-jvm.properties`. When present, its JVM criteria control the build daemon and take precedence over `JAVA_HOME`; `./gradlew --version` shows launcher and daemon selections separately. Treat this as project configuration and review it before sharing it. It currently selects Java 25 in this working checkout.
 
 ## Build
 

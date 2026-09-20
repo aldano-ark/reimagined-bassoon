@@ -164,9 +164,17 @@ class CommandTests(unittest.TestCase):
         self.assert_success(self.run_cli('build', 'ios', ANDROID_HOME='/nonexistent/sdk'))
 
     def test_wrong_java_version_fails_before_gradle(self):
-        result = self.run_cli('build', 'android', NATIVE_FAKE_JAVA_VERSION='25.0.3')
+        result = self.run_cli('build', 'android', NATIVE_FAKE_JAVA_VERSION='16.0.2')
         self.assertEqual(result.returncode, 1)
         self.assertIn('17', result.stdout + result.stderr)
+        self.assertNotIn('gradlew', [call['tool'] for call in self.calls()])
+
+    def test_bundled_android_studio_java_is_supported(self):
+        self.assert_success(self.run_cli('verify', 'android', NATIVE_FAKE_JAVA_VERSION='25.0.3'))
+
+    def test_unsupported_future_java_fails_before_gradle(self):
+        result = self.run_cli('build', 'android', NATIVE_FAKE_JAVA_VERSION='27.0.1')
+        self.assertEqual(result.returncode, 1)
         self.assertNotIn('gradlew', [call['tool'] for call in self.calls()])
 
     def test_native_failure_is_not_hidden_by_stale_artifact(self):

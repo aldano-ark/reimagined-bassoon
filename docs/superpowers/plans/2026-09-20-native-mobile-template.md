@@ -10,7 +10,9 @@
 
 **Spec:** [Approved design](../specs/2026-09-20-native-mobile-template-design.md). Read it before execution.
 
-**Status:** Ready for user review and selection of execution method. No application implementation or build has run.
+**Status:** Approved for native execution. Both application shells and the shared commands are implemented and verified; final integration evidence and review remain in progress.
+
+**Execution update:** Per the user's preference, accept Gradle-compatible launcher JDKs 17–26 instead of restricting the launcher to JDK 17. JBR 25.0.3 bundled with Android Studio passed Android build/lint. The IDE-generated project daemon criteria select Java 25; the app's bytecode target remains 17. Historical JDK-17-only instructions below are superseded by this update and the current platform README.
 
 ## Global Constraints
 

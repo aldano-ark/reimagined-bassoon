@@ -12,21 +12,26 @@ native_doctor() (
             if [ "${JAVA_HOME+x}" = x ]; then
                 native_java="$JAVA_HOME/bin/java"
                 [ -n "$JAVA_HOME" ] && [ -x "$native_java" ] || {
-                    native_error 'JAVA_HOME must point to a JDK 17 installation.'; exit 1;
+                    native_error 'JAVA_HOME must point to a compatible JDK (17–26).'; exit 1;
                 }
             else
                 native_java=$(command -v java) || {
-                    native_error 'Java is missing. Set JAVA_HOME to a JDK 17 installation.'; exit 1;
+                    native_error 'Java is missing. Set JAVA_HOME to a compatible JDK (17–26).'; exit 1;
                 }
             fi
             native_java_version=$("$native_java" -version 2>&1) || {
-                native_error 'Java could not start. Set JAVA_HOME to a working JDK 17 installation.'; exit 1;
+                native_error 'Java could not start. Set JAVA_HOME to a working JDK (17–26).'; exit 1;
             }
             native_java_major=$(printf '%s\n' "$native_java_version" | sed -n 's/.*version "\([0-9][0-9]*\).*/\1/p' | head -n 1)
-            [ "$native_java_major" = 17 ] || {
-                native_error 'This baseline requires JDK 17. Select it with JAVA_HOME.'; exit 1;
-            }
+            case "$native_java_major" in
+                17|18|19|20|21|22|23|24|25|26) ;;
+                *) native_error 'Gradle 9.4.1 requires a supported JDK (17–26). Select it with JAVA_HOME.'; exit 1 ;;
+            esac
+            printf 'Gradle launcher JVM:\n'
             printf '%s\n' "$native_java_version"
+            if [ -f "$NATIVE_ROOT/apps/android/gradle/gradle-daemon-jvm.properties" ]; then
+                printf 'Gradle daemon selection is controlled by gradle/gradle-daemon-jvm.properties.\n'
+            fi
             [ -n "${ANDROID_HOME:-}" ] && [ -f "$ANDROID_HOME/platforms/android-36/android.jar" ] || {
                 native_error 'ANDROID_HOME must contain the Android SDK platform android-36.'; exit 1;
             }
