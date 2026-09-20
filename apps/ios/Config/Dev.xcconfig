@@ -1,0 +1,5 @@
+// Dev.xcconfig
+APP_ENVIRONMENT = dev
+APP_ID = com.example.nativetemplate.dev
+APP_DISPLAY_NAME = NativeTemplate Dev
+API_BASE_URL = https:/$()/dev-api.example.com

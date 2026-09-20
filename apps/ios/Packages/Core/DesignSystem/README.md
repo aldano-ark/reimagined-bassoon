@@ -52,19 +52,19 @@ Open `Sources/DesignSystem/Previews/DesignSystemPreviews.swift` in Xcode. Debug-
 
 ## Verification
 
-The app's shared `NativeTemplate` scheme includes `DesignSystemUITests`. From the repository root, `./tooling/scripts/verify ios` compiles the package, app, and test target. This is a compilation check, not a test-run result.
+All three environment schemes include `DesignSystemUITests`. From the repository root, `./tooling/scripts/verify ios` compiles the package, app, and test target. This is a compilation check, not a test-run result.
 
 Run XCTest on an explicitly selected simulator:
 
 ```sh
 xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
-  -scheme NativeTemplate -configuration Debug \
+  -scheme NativeTemplate-Dev -configuration Debug-Dev \
   -destination "platform=iOS Simulator,id=$NATIVE_DESIGN_TEST_DEVICE" \
   -derivedDataPath .build/ios-design-tests \
   -parallel-testing-enabled NO -only-testing:DesignSystemUITests \
   CODE_SIGN_IDENTITY=- test
 ```
 
-Set `NATIVE_DESIGN_TEST_DEVICE` to a dedicated test simulator's UUID. Automated tests launch a debug-only fixture host using `--design-system-tests` and a scenario argument. Ordinary app launches retain the neutral screen; Release excludes the host and previews.
+Set `NATIVE_DESIGN_TEST_DEVICE` to a dedicated test simulator's UUID. Automated tests launch a debug-only fixture host using `--design-system-tests` and a scenario argument. Ordinary app launches show the environment configuration example; Release excludes the host and previews.
 
 Tests exercise actions, disabled/loading behavior, parent-disabled state, text binding and error accessibility, physical taps across the minimum field target, status actions, and enlarged-text RTL interaction. They do not establish every visual layout or replace VoiceOver/device inspection.

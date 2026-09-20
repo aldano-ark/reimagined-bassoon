@@ -1,0 +1,5 @@
+// Stg.xcconfig
+APP_ENVIRONMENT = stg
+APP_ID = com.example.nativetemplate.stg
+APP_DISPLAY_NAME = NativeTemplate Stg
+API_BASE_URL = https:/$()/stg-api.example.com
