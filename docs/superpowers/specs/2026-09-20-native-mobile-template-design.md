@@ -2,7 +2,7 @@
 
 Date: 2026-09-20
 
-Status: Proposed written design, ready for user review. The structural direction and empty application scope have been accepted in conversation; implementation has not started.
+Status: Approved by the user on 2026-09-20. Implementation planning is authorized; application implementation has not started.
 
 ## Intent and agreed scope
 
