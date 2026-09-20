@@ -69,9 +69,9 @@ Platform artifact contracts:
 
 **Interfaces:** Consumes the naming and platform minimums above. Produces a wrapper accepting `:app:assembleDebug`, `:app:lintDebug`, and `clean`, plus the Android artifact path. No iOS files are inputs.
 
-- [ ] **1. Confirm execution baseline and record prerequisites.** Check Git status before edits. Use JDK 17 through command-scoped `JAVA_HOME`; locally it is available at `/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home`. Inspect `ANDROID_HOME` for `platforms/android-36/android.jar` and `build-tools/36.0.0`. These machine paths belong in the execution environment, not committed configuration. Resolve workspace isolation according to the user's existing preference and applicable execution workflow.
+- [x] **1. Confirm execution baseline and record prerequisites.** Check Git status before edits. Use JDK 17 through command-scoped `JAVA_HOME`; locally it is available at `/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home`. Inspect `ANDROID_HOME` for `platforms/android-36/android.jar` and `build-tools/36.0.0`. These machine paths belong in the execution environment, not committed configuration. Resolve workspace isolation according to the user's existing preference and applicable execution workflow.
 
-- [ ] **2. Add output exclusions and text conventions.** `.gitignore` must contain the following focused exclusions; do not ignore the wrapper JAR or the shared Xcode scheme:
+- [x] **2. Add output exclusions and text conventions.** `.gitignore` must contain the following focused exclusions; do not ignore the wrapper JAR or the shared Xcode scheme:
 
 ```gitignore
 .DS_Store
@@ -96,7 +96,7 @@ __pycache__/
 
 Use `.editorconfig` with `root = true`, UTF-8, LF, a final newline, trailing whitespace removal, and four-space indentation; specify CRLF for `*.bat`. No automatic formatter dependency is required for the shell.
 
-- [ ] **3. Generate the genuine Gradle wrapper in a temporary bootstrap project.** Use the already installed Gradle 9.4.1 executable if available; otherwise obtain that official distribution and validate its published checksum. The local inspected executable is `$HOME/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin/gradle`. Assign its verified location to `NATIVE_GRADLE_BOOTSTRAP` for this command only.
+- [x] **3. Generate the genuine Gradle wrapper in a temporary bootstrap project.** Use the already installed Gradle 9.4.1 executable if available; otherwise obtain that official distribution and validate its published checksum. The local inspected executable is `$HOME/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj/gradle-9.4.1/bin/gradle`. Assign its verified location to `NATIVE_GRADLE_BOOTSTRAP` for this command only.
 
 ```sh
 NATIVE_WRAPPER_TMP=$(mktemp -d)
@@ -117,7 +117,7 @@ chmod +x apps/android/gradlew
 
 Run these steps with failure checking enabled. Do not substitute a global-Gradle shim for a checked-in wrapper. Do not copy unrelated cached dependencies into the repository.
 
-- [ ] **4. Configure the pinned Android project.** Use this initial stable baseline: AGP `9.2.1`, Gradle `9.4.1`, Kotlin/Compose compiler plugin `2.2.10`, Compose BOM `2026.02.01`, Activity Compose `1.12.4`, Java 17, compile/target SDK 36, build tools `36.0.0`, minimum SDK 26. AGP 9 supplies Kotlin support; do not also apply `org.jetbrains.kotlin.android`. The baseline is selected for compatibility, not as a claim that every dependency is the newest available release.
+- [x] **4. Configure the pinned Android project.** Use this initial stable baseline: AGP `9.2.1`, Gradle `9.4.1`, Kotlin/Compose compiler plugin `2.2.10`, Compose BOM `2026.02.01`, Activity Compose `1.12.4`, Java 17, compile/target SDK 36, build tools `36.0.0`, minimum SDK 26. AGP 9 supplies Kotlin support; do not also apply `org.jetbrains.kotlin.android`. The baseline is selected for compatibility, not as a claim that every dependency is the newest available release.
 
 `gradle/libs.versions.toml`:
 
@@ -173,7 +173,7 @@ dependencies {
 }
 ```
 
-- [ ] **5. Add the empty native screen and required resources.** `MainActivity.kt`:
+- [x] **5. Add the empty native screen and required resources.** `MainActivity.kt`:
 
 ```kotlin
 package com.example.nativetemplate
@@ -223,7 +223,7 @@ Create `app_name` with value `NativeTemplate`. Define `Theme.NativeTemplate` inh
 </vector>
 ```
 
-- [ ] **6. Run the independent native build and lint.** With valid command-scoped SDK/JDK settings:
+- [x] **6. Run the independent native build and lint.** With valid command-scoped SDK/JDK settings:
 
 ```sh
 cd apps/android
@@ -233,7 +233,7 @@ test -s app/build/outputs/apk/debug/app-debug.apk
 
 Expected: both Gradle tasks succeed; the APK exists; no Xcode command executes. If dependency metadata rejects the proposed baseline, investigate the actual diagnostic and adjust only the necessary pinned versions using official metadata, then record the verified change. Never suppress compatibility checks to obtain a green build.
 
-- [ ] **7. Document and commit Android.** The platform README lists prerequisites, exact pinned versions, native commands, artifact/lint report paths, and rename locations. Extension READMEs explain when to add a feature/core Gradle module and why `build-logic/` has no convention plugin yet. Run `git diff --check`, stage only `.gitignore`, `.editorconfig`, and `apps/android/`, and commit as `feat(android): add empty native application`.
+- [x] **7. Document and commit Android.** The platform README lists prerequisites, exact pinned versions, native commands, artifact/lint report paths, and rename locations. Extension READMEs explain when to add a feature/core Gradle module and why `build-logic/` has no convention plugin yet. Run `git diff --check`, stage only `.gitignore`, `.editorconfig`, and `apps/android/`, and commit as `feat(android): add empty native application`.
 
 ## Task 2: Build the independent iOS shell
 
@@ -246,7 +246,7 @@ Expected: both Gradle tasks succeed; the APK exists; no Xcode command executes. 
 
 **Interfaces:** Consumes the approved bundle identifier, name, and iOS minimum. Produces Xcode project `NativeTemplate`, shared scheme `NativeTemplate`, and the simulator artifact contract. No Gradle or Android files are inputs.
 
-- [ ] **1. Add the SwiftUI shell.** `NativeTemplateApp.swift`:
+- [x] **1. Add the SwiftUI shell.** `NativeTemplateApp.swift`:
 
 ```swift
 import SwiftUI
@@ -275,7 +275,7 @@ struct ContentView: View {
 
 Create the asset catalog root `Contents.json` as `{"info":{"author":"xcode","version":1}}`. A store-ready app icon is deferred; do not configure a missing AppIcon set or invent a brand.
 
-- [ ] **2. Create and commit a normal Xcode project with a shared scheme.** A one-time generator can use the already installed `xcodeproj` Ruby gem; it must not become a downstream build dependency or a checked-in bootstrap requirement. On this machine the gem is in `/opt/homebrew/opt/cocoapods/libexec` and Ruby is `/opt/homebrew/opt/ruby/bin/ruby`. Run this generator from `apps/ios/` with the gem environment scoped to that one invocation:
+- [x] **2. Create and commit a normal Xcode project with a shared scheme.** A one-time generator can use the already installed `xcodeproj` Ruby gem; it must not become a downstream build dependency or a checked-in bootstrap requirement. On this machine the gem is in `/opt/homebrew/opt/cocoapods/libexec` and Ruby is `/opt/homebrew/opt/ruby/bin/ruby`. Run this generator from `apps/ios/` with the gem environment scoped to that one invocation:
 
 ```ruby
 require 'xcodeproj'
@@ -314,7 +314,7 @@ scheme.save_as(project.path, 'NativeTemplate', true)
 
 The resulting checked-in files, not Ruby, are the build inputs. Inspect them for absolute machine paths and remove unintended generator defaults such as references to nonexistent files. Xcode's project templates are a fallback if the local helper is unavailable; preserve the same one-target and shared-scheme contract.
 
-- [ ] **3. Run a native simulator build without Android prerequisites.** From the repository root:
+- [x] **3. Run a native simulator build without Android prerequisites.** From the repository root:
 
 ```sh
 xcodebuild -list -project apps/ios/NativeTemplate.xcodeproj
@@ -328,7 +328,7 @@ test -s .build/ios/Build/Products/Debug-iphonesimulator/NativeTemplate.app/Info.
 
 Expected: the shared scheme is listed and the application builds successfully. This proves simulator compilation, not launch. If the sandbox blocks Xcode services or cache writes, use the permitted execution mechanism for this authorized local build; do not change the application architecture to work around the sandbox.
 
-- [ ] **4. Document and commit iOS.** Include Xcode prerequisites, project/scheme names, direct build command, output path, deployment minimum, and all rename locations. Package READMEs explain local Swift packages, target visibility, and the app → features → core dependency direction. Validate the project with `plutil -lint`, run `git diff --check`, stage `apps/ios/`, and commit as `feat(ios): add empty native application`.
+- [x] **4. Document and commit iOS.** Include Xcode prerequisites, project/scheme names, direct build command, output path, deployment minimum, and all rename locations. Package READMEs explain local Swift packages, target visibility, and the app → features → core dependency direction. Validate the project with `plutil -lint`, run `git diff --check`, stage `apps/ios/`, and commit as `feat(ios): add empty native application`.
 
 ## Task 3: Add reliable platform commands
 
@@ -336,7 +336,7 @@ Expected: the shared scheme is listed and the application builds successfully. T
 
 **Interfaces:** Consumes the exact native commands and artifacts from Tasks 1 and 2. Produces the CLI, status, and log contracts above. `lib.sh` provides `native_dispatch(action, argv...)`, `native_doctor(platform)`, `native_build(platform)`, `native_verify(platform)`, and `native_logged(platform, action, command...)`. Shell return codes follow the public contract; functions do not return parsed JSON or mutate global toolchain selection.
 
-- [ ] **1. Write black-box tests before the command implementation.** Use Python `unittest` and temporary directories. Copy `tooling/scripts/` into a fixture path whose name contains spaces when the source exists; otherwise create the fixture's empty script directory so setup succeeds before implementation. Create fake `apps/android/gradlew`, a nonempty `apps/android/gradle/wrapper/gradle-wrapper.jar`, `JAVA_HOME/bin/java`, `ANDROID_HOME/platforms/android-36/android.jar`, and `ANDROID_HOME/build-tools/36.0.0`. Put fake `uname`, `xcodebuild`, and `xcrun` first on the fixture PATH. Fake `uname` reports Darwin so these tests also work on Linux. The fake Java executable reports version 17 and the fake Xcode reports version 27. The iOS SDK returned by fake `xcrun` exists in the fixture.
+- [x] **1. Write black-box tests before the command implementation.** Use Python `unittest` and temporary directories. Copy `tooling/scripts/` into a fixture path whose name contains spaces when the source exists; otherwise create the fixture's empty script directory so setup succeeds before implementation. Create fake `apps/android/gradlew`, a nonempty `apps/android/gradle/wrapper/gradle-wrapper.jar`, `JAVA_HOME/bin/java`, `ANDROID_HOME/platforms/android-36/android.jar`, and `ANDROID_HOME/build-tools/36.0.0`. Put fake `uname`, `xcodebuild`, and `xcrun` first on the fixture PATH. Fake `uname` reports Darwin so these tests also work on Linux. The fake Java executable reports version 17 and the fake Xcode reports version 27. The iOS SDK returned by fake `xcrun` exists in the fixture.
 
 The fixture's `run_cli(action, *arguments, **overrides)` runs `/bin/sh` with the script path and arguments from outside the copied repository using `subprocess.run([...], cwd=temp_directory, env=fixture_environment, text=True, capture_output=True)`. It returns the `CompletedProcess`; before implementation the missing script produces a nonzero shell status rather than a fixture setup exception. `artifact(platform)` returns the Android APK path or the iOS application executable path, as defined above. `trace()` reads the fake-tool trace as text, returning an empty string when it does not exist. Each test gets a new fixture.
 
@@ -398,9 +398,9 @@ def test_success_without_artifact_fails_verification(self):
 
 The fixture methods are part of `CommandTests(unittest.TestCase)` and are implemented in the same test file. Use `TemporaryDirectory`, `Path`, `shutil.copytree`, and executable fake shell scripts; do not depend on a mocking library. Mark the fake iOS executable executable with `chmod(0o755)` so artifact validation is meaningful. Add an aggregate prerequisite-failure test confirming an available platform still runs, an iOS native-status test, and a `ThreadPoolExecutor` test running one fake build per platform and checking distinct log/artifact paths.
 
-- [ ] **2. Run the new tests and confirm failure because the command entry points do not exist yet.** Run `python3 -m unittest discover -s tooling/tests -v`. Correct fixture setup failures unrelated to the missing implementation before continuing.
+- [x] **2. Run the new tests and confirm failure because the command entry points do not exist yet.** Run `python3 -m unittest discover -s tooling/tests -v`. Correct fixture setup failures unrelated to the missing implementation before continuing.
 
-- [ ] **3. Implement small POSIX command entry points.** Each entry point loads `lib.sh` relative to itself and dispatches its fixed action; for example `build`:
+- [x] **3. Implement small POSIX command entry points.** Each entry point loads `lib.sh` relative to itself and dispatches its fixed action; for example `build`:
 
 ```sh
 #!/bin/sh
@@ -433,11 +433,11 @@ return "$native_first_status"
 
 Define `native_run_action(action, platform)` as an internal selector for `native_doctor`, `native_build`, or `native_verify`; it accepts only the three fixed action names. Do not rely on `set -e` inside functions called as conditionals: explicitly preserve and return failures.
 
-- [ ] **4. Implement platform-specific prerequisite checks.** Android requires `ANDROID_HOME` pointing to the pinned SDK/build-tools directories. If `JAVA_HOME` is provided, validate and use its Java executable without fallback; otherwise probe `java` on PATH and report a useful failure if it is a nonfunctional launcher. Check that its reported major version is 17 for this baseline and print the version. The error must explain how to set `JAVA_HOME`, not rewrite shell profiles. Check the Gradle wrapper JAR and executable before building.
+- [x] **4. Implement platform-specific prerequisite checks.** Android requires `ANDROID_HOME` pointing to the pinned SDK/build-tools directories. If `JAVA_HOME` is provided, validate and use its Java executable without fallback; otherwise probe `java` on PATH and report a useful failure if it is a nonfunctional launcher. Check that its reported major version is 17 for this baseline and print the version. The error must explain how to set `JAVA_HOME`, not rewrite shell profiles. Check the Gradle wrapper JAR and executable before building.
 
 iOS requires Darwin, a valid explicitly supplied `DEVELOPER_DIR` when present, successful `xcodebuild -version`, and successful `xcrun --sdk iphonesimulator --show-sdk-path`. Require that the returned SDK directory exists. It must not probe Android/Java. Both doctors print only relevant toolchain information and exact missing prerequisites. They do not install tools or accept SDK license agreements.
 
-- [ ] **5. Invoke native builds with separate outputs and reliable logs.** Android runs in a subshell with working directory `apps/android/`; use `./gradlew --no-daemon :app:assembleDebug` for build and add `:app:lintDebug` for verify. iOS invokes the project, shared scheme, Debug configuration, generic simulator destination, derived data path, and `CODE_SIGNING_ALLOWED=NO` exactly as Task 2. Record output without losing the native exit code:
+- [x] **5. Invoke native builds with separate outputs and reliable logs.** Android runs in a subshell with working directory `apps/android/`; use `./gradlew --no-daemon :app:assembleDebug` for build and add `:app:lintDebug` for verify. iOS invokes the project, shared scheme, Debug configuration, generic simulator destination, derived data path, and `CODE_SIGNING_ALLOWED=NO` exactly as Task 2. Record output without losing the native exit code:
 
 ```sh
 if "$@" > "$native_log" 2>&1; then
@@ -452,9 +452,9 @@ return "$native_command_status"
 
 `native_logged` creates the action's platform log directory, runs this pattern in a subshell, and returns the captured status. Log-directory creation failure returns 1. Avoid an unguarded `command | tee` pipeline. For build and verify, include relevant preflight output in the action log, and return before artifact checks when the native process fails. On success, require the nonempty Android APK or the iOS executable plus nonempty plist and print the artifact path. A missing artifact returns 1 with a message containing `artifact`.
 
-- [ ] **6. Run command tests and real verification.** Run `sh -n` on each of the four shell files and `python3 -m unittest discover -s tooling/tests -v`. Then run `./tooling/scripts/doctor all` and `./tooling/scripts/verify all` with the real JDK/SDK configuration. Expected: command tests pass, Android builds and lint passes, iOS builds, and both artifacts are reported. Capture any unperformed checks accurately.
+- [x] **6. Run command tests and real verification.** Run `sh -n` on each of the four shell files and `python3 -m unittest discover -s tooling/tests -v`. Then run `./tooling/scripts/doctor all` and `./tooling/scripts/verify all` with the real JDK/SDK configuration. Expected: command tests pass, Android builds and lint passes, iOS builds, and both artifacts are reported. Capture any unperformed checks accurately.
 
-- [ ] **7. Commit the verified command layer.** Run `git diff --check`, stage `tooling/scripts/` and `tooling/tests/`, and commit as `feat(tooling): add independent native build commands`.
+- [x] **7. Commit the verified command layer.** Run `git diff --check`, stage `tooling/scripts/` and `tooling/tests/`, and commit as `feat(tooling): add independent native build commands`.
 
 ## Task 4: Add contributor guidance and prove build isolation
 
@@ -469,15 +469,15 @@ return "$native_command_status"
 
 **Interfaces:** Consumes the actual files, CLI contracts, and measured results from Tasks 1–3. Produces an onboarding path, scoped contributor instructions, reusable work records, and auditable acceptance evidence. No new application behavior is introduced.
 
-- [ ] **1. Write discoverable contributor rules.** Root `AGENTS.md` links architecture, platform instructions, commands, and work templates. State the app → features/core → core dependency direction, explicit interfaces for feature coordination, module creation only for real responsibilities, scoped task ownership, and reporting unrun checks as unverified. Platform guidance adds Kotlin/Gradle and Swift/Xcode details without duplicating the shared policy. Keep routine authorized edits/checks autonomous; do not import a specific agent product's approval workflow into this template.
+- [x] **1. Write discoverable contributor rules.** Root `AGENTS.md` links architecture, platform instructions, commands, and work templates. State the app → features/core → core dependency direction, explicit interfaces for feature coordination, module creation only for real responsibilities, scoped task ownership, and reporting unrun checks as unverified. Platform guidance adds Kotlin/Gradle and Swift/Xcode details without duplicating the shared policy. Keep routine authorized edits/checks autonomous; do not import a specific agent product's approval workflow into this template.
 
 `README.md` includes a repository map, independent setup/build quickstarts, the three shared commands, artifact paths, links to platform READMEs, and HarmonyOS's planned status. `toolchains.md` records pinned versions and validated host/tool versions. The architecture decision states why runtime implementations remain independent and why feature/core directories initially contain guidance rather than dummy libraries. The contract/spec READMEs state what future content belongs there and require no invented product schemas.
 
-- [ ] **2. Add lightweight work templates with explicit fields.** A feature spec has Purpose, User-visible behavior, Platform coverage, Shared contracts, Acceptance scenarios, and Verification. A work item has Objective, Authorized completion boundary, Scope/files, Affected platforms, Dependencies, Acceptance criteria, Commands, Results/evidence, and Handoff/blockers. An architecture decision has Context, Decision, Alternatives, Consequences, and Validation. These are reusable blank forms, not unfinished implementation documents. Add concise field instructions rather than made-up sample product requirements.
+- [x] **2. Add lightweight work templates with explicit fields.** A feature spec has Purpose, User-visible behavior, Platform coverage, Shared contracts, Acceptance scenarios, and Verification. A work item has Objective, Authorized completion boundary, Scope/files, Affected platforms, Dependencies, Acceptance criteria, Commands, Results/evidence, and Handoff/blockers. An architecture decision has Context, Decision, Alternatives, Consequences, and Validation. These are reusable blank forms, not unfinished implementation documents. Add concise field instructions rather than made-up sample product requirements.
 
 - [ ] **3. Verify each native project opens independently.** List the Xcode project/scheme using the native command and import the Gradle project in Android Studio when UI access is available. A command-line Gradle configuration/build verifies the build graph; if IDE import cannot be inspected, report that check as unverified rather than implying it occurred. Keep IDE-generated local settings ignored.
 
-- [ ] **4. Verify clean-output build ordering.** First build with native clean actions so cleaning stays within each project's output directory:
+- [x] **4. Verify clean-output build ordering.** First build with native clean actions so cleaning stays within each project's output directory:
 
 ```sh
 (cd apps/android && ./gradlew --no-daemon clean)
@@ -492,7 +492,7 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
 
 Expected: every command succeeds and both artifact contracts hold. Capture statuses rather than relying on the last command's status. No arbitrary recursive deletion of paths is needed.
 
-- [ ] **5. Verify real concurrent builds from outside the repository.** Assign the absolute checkout to `NATIVE_REPO`, then run this shell fragment from a temporary working directory:
+- [x] **5. Verify real concurrent builds from outside the repository.** Assign the absolute checkout to `NATIVE_REPO`, then run this shell fragment from a temporary working directory:
 
 ```sh
 "$NATIVE_REPO/tooling/scripts/build" android &
@@ -509,7 +509,7 @@ test "$NATIVE_ANDROID_STATUS" -eq 0 && test "$NATIVE_IOS_STATUS" -eq 0
 
 Check both artifacts and their separate logs. The fake-tool tests cover paths with spaces; also invoke the real scripts through a path containing spaces if the checkout itself has none. Do not claim same-platform concurrent output safety.
 
-- [ ] **6. Confirm build integrity and documented commands.** Record a hash inventory of tracked files before native verification and compare it afterward; use Python `hashlib.sha256` over `git ls-files -z` so uncommitted documentation edits can remain stable across the comparison. Run `git diff --check` and `git status --short` and confirm no unexpected tracked changes. Use `git check-ignore` to confirm Android build output, `.build/ios`, logs, `local.properties`, and IDE user data are ignored while the Gradle wrapper JAR/shared scheme remain tracked. Run final `verify all` and the command tests after any implementation fixes; do not rerun expensive builds after documentation-only edits.
+- [x] **6. Confirm build integrity and documented commands.** Record a hash inventory of tracked files before native verification and compare it afterward; use Python `hashlib.sha256` over `git ls-files -z` so uncommitted documentation edits can remain stable across the comparison. Run `git diff --check` and `git status --short` and confirm no unexpected tracked changes. Use `git check-ignore` to confirm Android build output, `.build/ios`, logs, `local.properties`, and IDE user data are ignored while the Gradle wrapper JAR/shared scheme remain tracked. Run final `verify all` and the command tests after any implementation fixes; do not rerun expensive builds after documentation-only edits.
 
 - [ ] **7. Attempt launch smoke checks when runtimes are available.** Read `adb devices` and `xcrun simctl list devices available`. For an already available Android emulator, install the debug APK with `adb -s SERIAL install -r` and launch `com.example.nativetemplate/.MainActivity`; replace `SERIAL` with the observed emulator identifier. For an available iOS simulator, install the built app with `xcrun simctl install DEVICE_ID APP_PATH` and launch `com.example.nativetemplate`; use the observed device identifier and absolute artifact path. Inspect each neutral screen using available UI tools. Record compilation and launch results separately. Do not claim launch verification from process output alone when the screen was not inspected.
 
