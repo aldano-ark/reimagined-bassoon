@@ -10,7 +10,7 @@
 
 **Spec:** [Approved native design-library design](../specs/2026-09-20-native-design-libraries-design.md).
 
-**Status:** Proposed implementation plan for review. No library implementation has started.
+**Status:** Implemented with passing native checks; independent final review is pending. Android has 9 passing component tests, iOS has 8 passing interaction tests, and the shared commands have 20 passing tests.
 
 ## Global Constraints
 
@@ -66,9 +66,9 @@ The three tasks below form one cohesive design-library deliverable: the platform
 
 **Interfaces:** Produces `DSTheme`, `DSSpacing`, `DSButtonIntent`, `DSButton`, `DSTextField`, `DSStatusKind`, and `DSStatusView` in the package above. Produces `:core:designsystem:assembleDebug`, `:core:designsystem:lintDebug`, and `:core:designsystem:testDebugUnitTest`. The application artifact path stays unchanged.
 
-- [ ] **1. Establish a clean feature branch and read the approved spec.** Work in the existing dedicated checkout unless the user requests another worktree. Record the base commit and task progress using the execution skill. Keep the main branch available for the completed template. Confirm the current command suite passes before editing shared tooling.
+- [x] **1. Establish a clean feature branch and read the approved spec.** Work in the existing dedicated checkout unless the user requests another worktree. Record the base commit and task progress using the execution skill. Keep the main branch available for the completed template. Confirm the current command suite passes before editing shared tooling.
 
-- [ ] **2. Register the library and test prerequisites.** Add the catalog plugin alias `android-library` with id `com.android.library` and existing `agp` version. Declare it `apply false` in the root build and include `:core:designsystem` in settings. Add catalog entries for Compose `ui`, `ui-tooling-preview`, `ui-tooling`, `ui-test-junit4`, and `ui-test-manifest` using the existing BOM, plus `junit:junit:4.13.2` and `org.robolectric:robolectric:4.16.1`.
+- [x] **2. Register the library and test prerequisites.** Add the catalog plugin alias `android-library` with id `com.android.library` and existing `agp` version. Declare it `apply false` in the root build and include `:core:designsystem` in settings. Add catalog entries for Compose `ui`, `ui-tooling-preview`, `ui-tooling`, `ui-test-junit4`, and `ui-test-manifest` using the existing BOM, plus `junit:junit:4.13.2` and `org.robolectric:robolectric:4.16.1`.
 
 The library build file is:
 
@@ -107,7 +107,7 @@ dependencies {
 
 `api` is intentional for Compose types exposed in public signatures. Add a minimal `<manifest />`. Do not create convention plugins solely for these two small modules. Configure test heap only if measured memory failures require it.
 
-- [ ] **3. Write failing component tests.** Use `@RunWith(RobolectricTestRunner::class)`, `@Config(sdk = [35])`, and `@get:Rule val compose = createComposeRule()`. Set content under `DSTheme(dynamicColor = false)`. Add the following real interaction tests before implementing the controls:
+- [x] **3. Write failing component tests.** Use `@RunWith(RobolectricTestRunner::class)`, `@Config(sdk = [35])`, and `@get:Rule val compose = createComposeRule()`. Set content under `DSTheme(dynamicColor = false)`. Add the following real interaction tests before implementing the controls:
 
 ```kotlin
 @Test fun enabledButtonActivates() {
@@ -160,7 +160,7 @@ Also write a disabled-button test with `enabled = false`, a loading-to-enabled t
 
 Run `./gradlew :core:designsystem:testDebugUnitTest` from `apps/android/`. Expect initial compilation failure naming the missing DS APIs. Add only the minimum API declarations needed to compile the test harness and capture failing interaction assertions before implementing the actual controls. A compilation-only red result is not the final interaction proof.
 
-- [ ] **4. Implement foundations.** `DSSpacing` exposes `xs = 4.dp`, `sm = 8.dp`, `md = 12.dp`, `lg = 16.dp`, `xl = 24.dp`, and `xxl = 32.dp`. `DSTheme` follows system appearance and uses the native Material typography/shapes:
+- [x] **4. Implement foundations.** `DSSpacing` exposes `xs = 4.dp`, `sm = 8.dp`, `md = 12.dp`, `lg = 16.dp`, `xl = 24.dp`, and `xxl = 32.dp`. `DSTheme` follows system appearance and uses the native Material typography/shapes:
 
 ```kotlin
 @Composable
@@ -181,7 +181,7 @@ fun DSTheme(
 }
 ```
 
-- [ ] **5. Implement button behavior with native controls.** Public signature:
+- [x] **5. Implement button behavior with native controls.** Public signature:
 
 ```kotlin
 enum class DSButtonIntent { Primary, Secondary, Destructive }
@@ -199,7 +199,7 @@ fun DSButton(
 
 Implement the body with Material `Button`, `OutlinedButton`, and destructive `ButtonDefaults.buttonColors(containerColor = colorScheme.error, contentColor = colorScheme.onError)`. Pass `enabled && !loading` to the native control. Use one shared `@Composable RowScope.() -> Unit` label slot containing the visible text and, while loading, a native `CircularProgressIndicator` with `LocalContentColor`, a small icon-sized indicator, and spacing. Remove the spinner's duplicate accessibility semantics with `clearAndSetSemantics {}`; add a localized `stateDescription` to the button only while loading. Define `design_system_loading` as `Loading` in library string resources. Do not add a fixed text height or replace the native clickable implementation.
 
-- [ ] **6. Implement controlled fields and status composition.** The text field wraps `OutlinedTextField`:
+- [x] **6. Implement controlled fields and status composition.** The text field wraps `OutlinedTextField`:
 
 ```kotlin
 @Composable
@@ -235,13 +235,13 @@ fun DSTextField(
 
 `DSStatusKind` has `Neutral` and `Error`. `DSStatusView(title: String, modifier: Modifier = Modifier, description: String? = null, kind: DSStatusKind = Neutral, action: (@Composable () -> Unit)? = null)` lays out a `Column` with logical start alignment and native typography. Mark the title as a semantic heading; use `colorScheme.error` for an error title and `onSurface` otherwise. Render description with `onSurfaceVariant`, and invoke the optional action slot. No network or retry policy belongs here.
 
-- [ ] **7. Make the behavior tests green.** Run the complete library unit-test task and `:core:designsystem:lintDebug`. Investigate actual test/runtime failures before changing dependencies; do not turn behavior tests into constant assertions. Run the tests with the project's JBR 25 runtime first. If a test framework incompatibility is discovered, record the diagnostic and select a supported test-only remedy without changing the user's global Java environment.
+- [x] **7. Make the behavior tests green.** Run the complete library unit-test task and `:core:designsystem:lintDebug`. Investigate actual test/runtime failures before changing dependencies; do not turn behavior tests into constant assertions. Run the tests with the project's JBR 25 runtime first. If a test framework incompatibility is discovered, record the diagnostic and select a supported test-only remedy without changing the user's global Java environment.
 
-- [ ] **8. Add debug previews and connect the app.** Preview a stateful field, normal/disabled/loading buttons, all intents, and neutral/error status views. Add separate `@Preview` annotations for light/dark, font scale 2, and a right-to-left locale; the gallery explicitly disables dynamic color. The gallery is debug-only.
+- [x] **8. Add debug previews and connect the app.** Preview a stateful field, normal/disabled/loading buttons, all intents, and neutral/error status views. Add separate `@Preview` annotations for light/dark, font scale 2, and a right-to-left locale; the gallery explicitly disables dynamic color. The gallery is debug-only.
 
 Add `implementation(project(":core:designsystem"))` to the app. Replace its `MaterialTheme` entry point with `DSTheme`, leaving the neutral screen content intact. Do not move app startup into the library.
 
-- [ ] **9. Verify and document Android.** Run:
+- [x] **9. Verify and document Android.** Run:
 
 ```sh
 ./gradlew --no-daemon :app:assembleDebug :app:lintDebug \
@@ -261,7 +261,7 @@ Expect successful debug app/library builds, library tests, lint, and release lib
 
 **Interfaces:** Produces public `DSSpacing`, `DSButtonIntent`, `DSButton`, `DSTextField`, `DSStatusKind`, and generic `DSStatusView<Action: View>` in module `DesignSystem`. Produces an Xcode UI-test target named `DesignSystemUITests` in the existing shared scheme. Test-host launch arguments are `--design-system-tests` plus `--ds-scenario=buttons|field|status`; `--ds-large-rtl` applies enlarged text and RTL to the test host only. Normal launches and the application artifact path stay unchanged.
 
-- [ ] **1. Register the local package and native test target.** Package manifest:
+- [x] **1. Register the local package and native test target.** Package manifest:
 
 ```swift
 // swift-tools-version: 6.0
@@ -284,7 +284,7 @@ Add an `XCLocalSwiftPackageReference` with path `Packages/Core/DesignSystem`, a 
 
 Create the native UI-test bundle `DesignSystemUITests` with `TEST_TARGET_NAME = NativeTemplate`, deployment minimum 17, Swift language version 6, generated Info.plist, and bundle identifier `com.example.nativetemplate.DesignSystemUITests`. Add an app target dependency and register the target in the shared scheme's test action. Any explicit system framework references must use `SDKROOT`, preserving the previous review correction.
 
-- [ ] **2. Define the debug-only test host and write failing UI tests.** `DesignSystemTestHost` owns fixture state with `@State` and selects a scenario from the launch arguments. It is compiled only under `#if DEBUG`. The app entry point uses it only when `--design-system-tests` is present; otherwise it renders `ContentView`. No test switch exists in Release.
+- [x] **2. Define the debug-only test host and write failing UI tests.** `DesignSystemTestHost` owns fixture state with `@State` and selects a scenario from the launch arguments. It is compiled only under `#if DEBUG`. The app entry point uses it only when `--design-system-tests` is present; otherwise it renders `ContentView`. No test switch exists in Release.
 
 Fixtures:
 
@@ -337,7 +337,7 @@ Add a disabled/inherited-disabled test verifying both buttons are disabled and c
 
 Run the full `build-for-testing` command in step 6 first and observe missing DS API compilation diagnostics. Add the minimum type/initializer declarations needed to compile the host and observe failing XCTest interaction assertions on the isolated simulator before implementing the actual controls. Successful test compilation alone does not establish behavior.
 
-- [ ] **3. Implement native SwiftUI foundations and buttons.** `DSSpacing` is a public enum with static `CGFloat` values named `xs`, `sm`, `md`, `lg`, `xl`, `xxl` matching 4, 8, 12, 16, 24, 32. Native SwiftUI text styles and semantic foreground/background colors remain available directly.
+- [x] **3. Implement native SwiftUI foundations and buttons.** `DSSpacing` is a public enum with static `CGFloat` values named `xs`, `sm`, `md`, `lg`, `xl`, `xxl` matching 4, 8, 12, 16, 24, 32. Native SwiftUI text styles and semantic foreground/background colors remain available directly.
 
 Button API:
 
@@ -389,7 +389,7 @@ public struct DSButton: View {
 
 Do not set a fixed tint or custom corner shape. The native destructive role and inherited tint/style behavior remain intact.
 
-- [ ] **4. Implement labeled fields and status views.** `DSTextField` is a public SwiftUI View with an explicit initializer accepting `LocalizedStringKey` label, `Binding<String>` text, `isEnabled`, optional supporting/error `String`, `UIKeyboardType`, optional `UITextContentType`, optional `TextInputAutocapitalization`, autocorrection flag, `SubmitLabel`, and an `onSubmit` closure. Defaults use normal native text editing; add no text transformations.
+- [x] **4. Implement labeled fields and status views.** `DSTextField` is a public SwiftUI View with an explicit initializer accepting `LocalizedStringKey` label, `Binding<String>` text, `isEnabled`, optional supporting/error `String`, `UIKeyboardType`, optional `UITextContentType`, optional `TextInputAutocapitalization`, autocorrection flag, `SubmitLabel`, and an `onSubmit` closure. Defaults use normal native text editing; add no text transformations.
 
 Its initializer interface is:
 
@@ -431,11 +431,11 @@ TextField("", text: $text)
 
 Declare `DSStatusKind` with `.neutral` and `.error`. `DSStatusView<Action: View>` accepts a required `LocalizedStringKey` title, optional `String` description, kind defaulting to `.neutral`, and a `@ViewBuilder action: () -> Action`. Add a constrained initializer where `Action == EmptyView` for no-action usage. Use a leading-aligned `VStack`, native typography, `.accessibilityAddTraits(.isHeader)` on the title, semantic secondary styling for the description, and the composed action. Error titles use the platform error color; no icon dependency is required.
 
-- [ ] **5. Add previews and integrate the ordinary app.** Wrap the preview gallery and its `#Preview` declarations in `#if DEBUG`. Include normal and error controls, loading/disabled states, light/dark appearance, `.dynamicTypeSize(.accessibility3)`, and RTL layout. Use a private stateful preview wrapper for text entry.
+- [x] **5. Add previews and integrate the ordinary app.** Wrap the preview gallery and its `#Preview` declarations in `#if DEBUG`. Include normal and error controls, loading/disabled states, light/dark appearance, `.dynamicTypeSize(.accessibility3)`, and RTL layout. Use a private stateful preview wrapper for text entry.
 
 Import `DesignSystem` in `ContentView` and use `.padding(DSSpacing.lg)` on the neutral screen. The test-host conditional is debug-only in `NativeTemplateApp`, and a normal launch continues to show `NativeTemplate`.
 
-- [ ] **6. Compile debug, test, and release configurations.** From the repository root, use the committed shared scheme:
+- [x] **6. Compile debug, test, and release configurations.** From the repository root, use the committed shared scheme:
 
 ```sh
 xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
@@ -450,7 +450,7 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
 
 Expect the package, normal app, previews, and UI-test bundle to compile in Debug, and a Release app without the debug test host/previews. If SwiftUI preview macros are blocked by sandbox plugin execution, use the authorized local build execution mechanism rather than deleting previews.
 
-- [ ] **7. Run XCTest in a separate simulator.** Inspect `xcrun simctl list runtimes available` and `xcrun simctl list devicetypes` and assign the observed installed iOS 27 runtime identifier to `NATIVE_IOS_RUNTIME` and an observed iPhone device-type identifier to `NATIVE_DEVICE_TYPE`. These are discovered environment values, not source constants. Create a uniquely named disposable simulator and retain its returned UUID:
+- [x] **7. Run XCTest in a separate simulator.** Inspect `xcrun simctl list runtimes available` and `xcrun simctl list devicetypes` and assign the observed installed iOS 27 runtime identifier to `NATIVE_IOS_RUNTIME` and an observed iPhone device-type identifier to `NATIVE_DEVICE_TYPE`. These are discovered environment values, not source constants. Create a uniquely named disposable simulator and retain its returned UUID:
 
 ```sh
 NATIVE_DESIGN_TEST_DEVICE=$(xcrun simctl create \
@@ -474,7 +474,7 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
 
 Allow standard simulator ad-hoc signing for test execution; this does not require a personal distribution identity. Capture the exit code and XCTest result bundle. Shut down and delete only the newly created UUID afterward, using a trap in the execution wrapper. Do not use `booted` or select the user's existing foreground simulator. If creation/execution is genuinely unavailable, keep the tests and report compiled versus executed status separately.
 
-- [ ] **8. Document and commit iOS.** Add local package usage, public initializer examples, native style/tint inheritance, state ownership, localization, preview instructions, and test-host/test-runner instructions to its README. Confirm `plutil -lint`, shared-scheme resolution, native builds, and test results. Commit as `feat(ios): add native SwiftUI design system`.
+- [x] **8. Document and commit iOS.** Add local package usage, public initializer examples, native style/tint inheritance, state ownership, localization, preview instructions, and test-host/test-runner instructions to its README. Confirm `plutil -lint`, shared-scheme resolution, native builds, and test results. Commit as `feat(ios): add native SwiftUI design system`.
 
 ## Task 3: Shared verification, documentation, and isolation evidence
 
@@ -482,7 +482,7 @@ Allow standard simulator ad-hoc signing for test execution; this does not requir
 
 **Interfaces:** Consumes the native targets from Tasks 1 and 2. `build android|ios|all` retains its existing contract. `verify android` now includes design-library lint and JVM component tests. `verify ios` compiles the UI-test target with `build-for-testing`; actual XCTest execution remains the separate simulator command documented above.
 
-- [ ] **1. Write failing command-contract tests.** Extend the existing fake Gradle tool to accept both old and new verify argument lists during the red step. Keep the real shell scripts under test. Assert all required tasks are present:
+- [x] **1. Write failing command-contract tests.** Extend the existing fake Gradle tool to accept both old and new verify argument lists during the red step. Keep the real shell scripts under test. Assert all required tasks are present:
 
 ```python
 def test_verify_includes_design_library_checks(self):
@@ -501,7 +501,7 @@ def test_ios_verify_compiles_test_target(self):
 
 In the fake Gradle tool, `NATIVE_FAKE_LIBRARY_TEST_STATUS` produces its requested failure only when the component test task is requested; add a test setting it to `74` and asserting `verify android` returns `74`. Add the corresponding iOS test-compilation failure case using the existing native exit-code mechanism. Run the full Python suite and observe these new expectations fail against current dispatch.
 
-- [ ] **2. Extend native verification without hiding failures.** In the Android verify branch append:
+- [x] **2. Extend native verification without hiding failures.** In the Android verify branch append:
 
 ```sh
 set -- "$@" :app:lintDebug :core:designsystem:lintDebug :core:designsystem:testDebugUnitTest
@@ -520,11 +520,11 @@ Pass `"$native_xcode_action"` as the final Xcode argument. Preserve the existing
 
 Update fake-tool expected arguments to require the final contracts after the new tests turn green. Run all command tests and `sh -n` on the shell files. Expected: prior behavior coverage remains green and missing library checks/test-target compilation would now fail the suite.
 
-- [ ] **3. Write discovery and usage documentation.** `docs/design-system/README.md` contains a platform API map, component state matrix, semantic styling differences, minimum-target/text-scaling guidance, preview locations, and exact checks. Include compilable usage examples using the interfaces specified in Tasks 1 and 2. State explicitly that native controls remain the escape hatch for uncovered patterns and that callers own state, validation, async work, navigation, and localization of their supplied copy.
+- [x] **3. Write discovery and usage documentation.** `docs/design-system/README.md` contains a platform API map, component state matrix, semantic styling differences, minimum-target/text-scaling guidance, preview locations, and exact checks. Include compilable usage examples using the interfaces specified in Tasks 1 and 2. State explicitly that native controls remain the escape hatch for uncovered patterns and that callers own state, validation, async work, navigation, and localization of their supplied copy.
 
 Update contributor guidance to link the design libraries. Update command documentation: Android verification executes component tests; iOS verification compiles tests, while the separate simulator test command executes them. Keep HarmonyOS documentation-only. Record the internal English loading string's resource location for future localization.
 
-- [ ] **4. Run the integrated checks and prove isolation.** With command-scoped JBR 25 and the existing SDK environment, run `./tooling/scripts/verify all`. Run Android and iOS `build` commands concurrently from a directory outside the checkout, each with its own log, and verify both artifacts. Run the Python command suite after the final script changes. Compare tracked-file hashes before/after builds and inspect Git status so IDE/package resolution did not rewrite tracked configuration.
+- [x] **4. Run the integrated checks and prove isolation.** With command-scoped JBR 25 and the existing SDK environment, run `./tooling/scripts/verify all`. Run Android and iOS `build` commands concurrently from a directory outside the checkout, each with its own log, and verify both artifacts. Run the Python command suite after the final script changes. Compare tracked-file hashes before/after builds and inspect Git status so IDE/package resolution did not rewrite tracked configuration.
 
 - [ ] **5. Record actual evidence and review.** The verification record lists exact component-test names/counts and outcomes, native build/lint results, debug/release/test-target compilation, XCTest simulator execution status, preview definitions, visual checks actually performed, independent/concurrent build results, and any unavailable checks. Do not claim a visual pass from preview compilation. Preserve the user's computer-control preference.
 

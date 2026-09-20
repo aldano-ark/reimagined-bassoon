@@ -34,7 +34,7 @@ From this directory:
 ./gradlew --no-daemon :app:lintDebug
 ```
 
-From the repository root, the equivalent entry points are `./tooling/scripts/build android` and `./tooling/scripts/verify android`. Verification builds and runs Android lint.
+From the repository root, the equivalent entry points are `./tooling/scripts/build android` and `./tooling/scripts/verify android`. Verification also runs `:core:designsystem:lintDebug` and `:core:designsystem:testDebugUnitTest` for the [design library](core/designsystem/README.md).
 
 APK: `app/build/outputs/apk/debug/app-debug.apk`.
 Lint report: `app/build/reports/lint-results-debug.html`.

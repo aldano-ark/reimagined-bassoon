@@ -2,7 +2,7 @@
 
 Date: 2026-09-20
 
-Status: Approved by the user on 2026-09-20. Native execution remains the session preference. Implementation planning is in progress; library implementation has not started.
+Status: Implemented on 2026-09-20 with passing native component, build, and command checks. Independent final review is pending.
 
 ## Intent and accepted direction
 

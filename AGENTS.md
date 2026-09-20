@@ -4,6 +4,7 @@
 
 - Architecture and boundaries: [docs/architecture/overview.md](docs/architecture/overview.md).
 - Toolchain prerequisites: [docs/architecture/toolchains.md](docs/architecture/toolchains.md).
+- Native UI foundations and components: [docs/design-system/README.md](docs/design-system/README.md).
 - Development and evidence: [docs/workflows/development.md](docs/workflows/development.md), [docs/workflows/verification.md](docs/workflows/verification.md).
 - Read `apps/android/AGENTS.md` or `apps/ios/AGENTS.md` when changing that platform.
 - Product behavior belongs in `docs/specs/`; use `tooling/templates/` for new work definitions and decisions.
@@ -23,5 +24,7 @@ Add modules, packages, data layers, and third-party dependencies for concrete re
 ## Verify and report
 
 Run `./tooling/scripts/doctor <platform>` to inspect prerequisites and `./tooling/scripts/verify <platform>` for the affected native app. Changes to shared tooling require `python3 -m unittest discover -s tooling/tests -v`; shared build changes also require both native verifications when toolchains are available.
+
+Use the design library for its supplied patterns, and native controls for uncovered behavior. Component changes need the corresponding behavior tests and preview examples. Android verification executes component tests; iOS verification compiles its UI tests, which must be run separately on a dedicated simulator for interaction evidence.
 
 Document a change's behavior, affected files/platforms, commands and results, and any remaining limitations. Missing tools or unrun checks are unverified, never a pass. Build, lint, IDE import, and simulator launch are distinct forms of evidence. Keep architecture decisions in `docs/decisions/` when a boundary changes.

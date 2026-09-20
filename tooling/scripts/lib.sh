@@ -75,7 +75,7 @@ native_compile() (
             cd "$NATIVE_ROOT/apps/android" || exit 1
             set -- --no-daemon :app:assembleDebug
             if [ "$native_action" = verify ]; then
-                set -- "$@" :app:lintDebug
+                set -- "$@" :app:lintDebug :core:designsystem:lintDebug :core:designsystem:testDebugUnitTest
             fi
             ./gradlew "$@" || exit $?
             native_artifact="$NATIVE_ROOT/apps/android/app/build/outputs/apk/debug/app-debug.apk"
@@ -84,11 +84,15 @@ native_compile() (
             }
             ;;
         ios)
+            native_xcode_action=build
+            if [ "$native_action" = verify ]; then
+                native_xcode_action=build-for-testing
+            fi
             xcodebuild -project "$NATIVE_ROOT/apps/ios/NativeTemplate.xcodeproj" \
                 -scheme NativeTemplate -configuration Debug \
                 -destination 'generic/platform=iOS Simulator' \
                 -derivedDataPath "$NATIVE_ROOT/.build/ios" \
-                CODE_SIGNING_ALLOWED=NO build || exit $?
+                CODE_SIGNING_ALLOWED=NO "$native_xcode_action" || exit $?
             native_artifact="$NATIVE_ROOT/.build/ios/Build/Products/Debug-iphonesimulator/NativeTemplate.app"
             [ -s "$native_artifact/NativeTemplate" ] &&
                 [ -x "$native_artifact/NativeTemplate" ] &&

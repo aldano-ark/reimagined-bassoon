@@ -26,7 +26,7 @@ From the repository root:
 
 Use `all` instead of a platform to run both. Each platform command checks only its own prerequisites. `all` attempts both and fails if either fails; HarmonyOS is excluded until implemented. The shared commands use POSIX shell on macOS/Linux; Android also retains the normal Windows Gradle wrapper.
 
-`verify android` builds and runs Android lint. `verify ios` compiles for the generic iOS Simulator destination and checks the app artifact. These commands do not launch apps or claim runtime test coverage.
+`verify android` builds, runs app/library lint, and executes the design library's Robolectric component tests. `verify ios` compiles the app/package and UI-test target for a generic iOS Simulator destination and checks the app artifact. iOS interaction tests run separately on a dedicated simulator; see the [design-library guide](docs/design-system/README.md).
 
 Build outputs:
 
@@ -39,12 +39,13 @@ The commands also work by absolute path from another working directory. One Andr
 ## Repository map
 
 ```text
-apps/android/          Kotlin/Compose app; future feature/core modules
-apps/ios/              Swift/SwiftUI app; future local Swift packages
+apps/android/          Kotlin/Compose app and native design-system module
+apps/ios/              Swift/SwiftUI app, design-system package, and UI tests
 apps/harmonyos/        Planned platform boundary
 contracts/             Future shared schemas and behavioral fixtures
 docs/architecture/     Boundaries and verified toolchains
 docs/decisions/        Architecture decisions and their rationale
+docs/design-system/    Component contracts, native differences, and previews
 docs/workflows/        Development and verification guidance
 docs/specs/            Future product behavior specifications
 tooling/scripts/       Platform commands
@@ -52,7 +53,9 @@ tooling/tests/         Command behavior tests
 tooling/templates/     Feature specs, work items, and decisions
 ```
 
-Feature/core directories contain extension guidance. Create compiled modules or packages when they have a real responsibility. The apps share behavioral requirements and conventions; their runtime implementations remain native.
+The design system is the first core library on each platform. Other feature/core directories contain extension guidance; create additional modules or packages when they have a real responsibility. The apps share behavioral requirements and conventions; their runtime implementations remain native.
+
+The [native design libraries](docs/design-system/README.md) provide adaptive styling, content spacing, buttons, labeled text fields, status views, and IDE previews. Android uses Material 3; iOS uses native SwiftUI styles.
 
 ## Humans and agents
 

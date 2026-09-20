@@ -40,21 +40,26 @@ elif tool == 'gradlew':
     assert Path.cwd() == root / 'apps/android', Path.cwd()
     assert args in (
         ['--no-daemon', ':app:assembleDebug'],
-        ['--no-daemon', ':app:assembleDebug', ':app:lintDebug'],
+        ['--no-daemon', ':app:assembleDebug', ':app:lintDebug',
+         ':core:designsystem:lintDebug', ':core:designsystem:testDebugUnitTest'],
     ), args
     print('android build')
     if os.environ.get('NATIVE_FAKE_NO_ARTIFACT') != '1':
         artifact = root / 'apps/android/app/build/outputs/apk/debug/app-debug.apk'
         artifact.parent.mkdir(parents=True, exist_ok=True)
         artifact.write_bytes(b'fake apk for wrapper tests')
-    sys.exit(int(os.environ.get('NATIVE_FAKE_ANDROID_STATUS', '0')))
+    status = int(os.environ.get('NATIVE_FAKE_ANDROID_STATUS', '0'))
+    if status == 0 and ':core:designsystem:testDebugUnitTest' in args:
+        status = int(os.environ.get('NATIVE_FAKE_LIBRARY_TEST_STATUS', '0'))
+    sys.exit(status)
 elif tool == 'xcodebuild':
+    assert args[-1] in ('build', 'build-for-testing'), args
     assert args == [
         '-project', str(root / 'apps/ios/NativeTemplate.xcodeproj'),
         '-scheme', 'NativeTemplate', '-configuration', 'Debug',
         '-destination', 'generic/platform=iOS Simulator',
         '-derivedDataPath', str(root / '.build/ios'),
-        'CODE_SIGNING_ALLOWED=NO', 'build',
+        'CODE_SIGNING_ALLOWED=NO', args[-1],
     ], args
     print('ios build')
     if os.environ.get('NATIVE_FAKE_NO_ARTIFACT') != '1':
@@ -64,7 +69,10 @@ elif tool == 'xcodebuild':
         executable.write_text('fake executable for wrapper tests')
         executable.chmod(0o755)
         (app / 'Info.plist').write_text('fake plist for wrapper tests')
-    sys.exit(int(os.environ.get('NATIVE_FAKE_IOS_STATUS', '0')))
+    status = int(os.environ.get('NATIVE_FAKE_IOS_STATUS', '0'))
+    if status == 0 and args[-1] == 'build-for-testing':
+        status = int(os.environ.get('NATIVE_FAKE_IOS_TEST_BUILD_STATUS', '0'))
+    sys.exit(status)
 else:
     raise AssertionError((tool, args))
 '''
@@ -214,6 +222,29 @@ class CommandTests(unittest.TestCase):
         calls = [call for call in self.calls() if call['tool'] == 'gradlew']
         self.assertEqual(len(calls), 1)
         self.assertIn(':app:lintDebug', calls[0]['args'])
+
+    def test_verify_includes_design_library_checks(self):
+        self.assert_success(self.run_cli('verify', 'android'))
+        calls = [call for call in self.calls() if call['tool'] == 'gradlew']
+        self.assertEqual(len(calls), 1)
+        self.assertIn(':core:designsystem:lintDebug', calls[0]['args'])
+        self.assertIn(':core:designsystem:testDebugUnitTest', calls[0]['args'])
+
+    def test_library_test_failure_is_not_hidden_by_app_artifact(self):
+        result = self.run_cli('verify', 'android', NATIVE_FAKE_LIBRARY_TEST_STATUS='74')
+        self.assertEqual(result.returncode, 74)
+        self.assertTrue(self.artifact('android').exists())
+
+    def test_ios_verify_compiles_test_target(self):
+        self.assert_success(self.run_cli('verify', 'ios'))
+        calls = [call for call in self.calls()
+                 if call['tool'] == 'xcodebuild' and call['args'] != ['-version']]
+        self.assertEqual(calls[0]['args'][-1], 'build-for-testing')
+
+    def test_ios_test_compilation_failure_is_propagated(self):
+        result = self.run_cli('verify', 'ios', NATIVE_FAKE_IOS_TEST_BUILD_STATUS='75')
+        self.assertEqual(result.returncode, 75)
+        self.assertTrue(self.artifact('ios').exists())
 
     def test_doctor_creates_no_artifact(self):
         self.assert_success(self.run_cli('doctor', 'all'))

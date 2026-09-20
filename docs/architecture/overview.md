@@ -12,7 +12,7 @@ One product lives in independent native platform projects. Shared documents desc
 
 Core cannot import features or the app. A feature cannot import another feature's implementation. Coordinate feature navigation at the app boundary; extract a small shared interface only when a consumer needs it.
 
-Android expresses build boundaries with Gradle modules and Kotlin visibility. iOS uses local Swift packages, target dependencies, and Swift access control. Initially each platform has one app target/module. Reserved directories describe extension points without adding dummy compiled libraries.
+Android expresses build boundaries with Gradle modules and Kotlin visibility. iOS uses local Swift packages, target dependencies, and Swift access control. Each platform has an application and a core design library. The iOS UI-test target hosts component verification through a debug-only fixture. Other reserved directories describe extension points without adding dummy compiled libraries.
 
 ## State and data
 
@@ -25,6 +25,7 @@ When external data exists, isolate access behind repositories or service interfa
 - Product requirements and acceptance criteria in `docs/specs/`.
 - Language-neutral schemas and fixtures in `contracts/` when needed.
 - Architecture decisions, contribution workflow, and verification commands.
+- Component purposes and state contracts in the [design-library guide](../design-system/README.md), with native implementations and styling on each platform.
 
 Runtime implementations, native dependency manifests, and IDE projects belong to their platforms. Product parity means equivalent required behavior, not identical code or screen structure.
 
