@@ -1,6 +1,6 @@
 # Native environment configuration
 
-Status: proposed design for review. Native configuration and separate app identities are agreed; the implementation details below are proposed.
+Status: approved design, 2026-09-20. Implementation planning is authorized; implementation has not started.
 
 ## Purpose
 
