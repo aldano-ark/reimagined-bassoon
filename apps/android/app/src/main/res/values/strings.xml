@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">NativeTemplate</string>
+    <string name="environment_label">Environment: %1$s</string>
+    <string name="api_base_url_label">API base URL: %1$s</string>
+    <string name="request_label">%1$s %2$s</string>
 </resources>
