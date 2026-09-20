@@ -2,7 +2,7 @@
 
 ## Objective and scope
 
-Implement the [approved environment design](../specs/2026-09-20-native-environments.md): native dev/stg/prod configuration, separate app identities, independent Debug/Release modes, and a dummy health-request example. The completion boundary is a tested local feature branch; publishing, signing for distribution, and store submission are outside this work.
+Implement the [approved environment design](../specs/2026-09-20-native-environments.md): native dev/stg/prod configuration, separate app identities, independent Debug/Release modes, and a dummy health-request example. The reviewed feature branch was merged locally into main at ae2368c on 2026-09-21. Publishing, signing for distribution, and store submission are outside this work.
 
 Changed areas: Android application/configuration/tests; iOS application/configuration/project/schemes/tests; shared verification scripts and tests; current guides and [decision 0002](../decisions/0002-native-environment-configuration.md). The design-system implementations are unchanged.
 
@@ -33,6 +33,7 @@ iOS: Xcode 27.0 (27A266a), simulator SDK/runtime 27.0, Swift 6 language mode, an
 | Larger text | Inspected on both platforms | Android font scale 2.0 and iOS accessibility-large; endpoint and full request wrap without ellipsis |
 | Build isolation | Passed | Native clean; Android → iOS → Android; concurrent builds from an outside working directory; 109 tracked inputs and Git status unchanged |
 | Generated-output isolation | Passed | Build outputs and evidence remain ignored |
+| Verification after local main merge | Passed | All 35 shared tests and both native verification matrices passed in the main checkout; iOS verification compiles tests |
 
 Primary repeatable commands:
 
@@ -58,13 +59,14 @@ Configuration parsing and request construction were tested before implementation
 
 ## Local artifacts
 
-Generated evidence is ignored and local to the feature worktree; it is not a portable Git artifact:
+Generated evidence is ignored and local to the working checkout; it is not a portable Git artifact. Logs, screenshots, XML results, and ten XCTest result bundles were preserved in the main checkout before removing the completed feature worktree:
 
 - `.build/environment-evidence/`: environment screenshots, Android UI hierarchy snapshots, archived logs, test-result XML, and isolation summary.
 - `.build/ios-environment-tests/{dev,stg,prod}-ui-results.xcresult`: executed component UI-test results.
 - `.build/ios-environment-tests/{dev,stg,prod}/Logs/Test/`: executed app-test results.
 - `.build/ios-config-probe/Logs/Test/`: the iOS endpoint-edit probe.
 - `.build/logs/{android,ios}/{doctor,verify,build}.log`: shared-command output; later runs replace these files.
+- `.build/environment-evidence/merge-*.log`: doctor, shared-suite, and native verification output from the main checkout after the local merge.
 
 The final isolation checks clean native outputs and rebuild the default dev Debug apps. The archived evidence records the earlier complete matrices; it does not imply every variant's generated output remains after cleaning.
 
