@@ -27,7 +27,7 @@ iOS was compiled with Xcode 27.0 (27A266a), Swift 6.4 in Swift 6 language mode, 
 | Output isolation | Passed | Distinct artifacts and logs; Git ignores outputs, caches, SDK locations, and IDE user state |
 | Xcode project format | Passed | `plutil -lint` |
 | Xcode IDE build | User-reported pass | User reported “XCode build success” after taking over computer use |
-| Android Studio IDE sync/build | Awaiting user confirmation | Command-line Gradle configuration/build passes; IDE confirmation is recorded separately |
+| Android Studio IDE sync/build | User-reported pass | User confirmed both Gradle sync and app build passed |
 | Emulator/simulator launch | Unverified | Computer use handed to the user; no runtime success inferred from compilation |
 
 ## Commands and artifacts
@@ -57,6 +57,8 @@ Android lint reports zero errors and eight warnings: seven newer SDK/tool/depend
 
 The generated Xcode project referenced a nonexistent AccentColor asset. That unused setting was removed, and subsequent iOS builds succeeded. Xcode also reports skipped App Intents metadata extraction because this empty app has no App Intents dependency.
 
+The independent final review found no blocking correctness issues. It identified a generated Foundation framework reference tied to an absent iOS 26 SDK. The reference was changed to use the selected `SDKROOT`; a direct resolution check failed before the correction and passed afterward. The corrected iOS project then rebuilt successfully, and all 16 command tests passed again. This removes unnecessary SDK-version coupling from the reusable project.
+
 No signed device/archive/store release, Windows/Linux host execution, minimum-OS runtime execution, or HarmonyOS build has been verified. Only launcher JDKs 17 and 25 were used for real Android builds; the helper's accepted 17–26 range follows Gradle's compatibility matrix rather than claiming all combinations were tested.
 
 ## Execution decisions
@@ -65,3 +67,6 @@ No signed device/archive/store release, Windows/Linux host execution, minimum-OS
 - Native compilation/lint verifies the empty shells; behavior tests target the command layer. There are no automated application runtime tests yet.
 - `.gitattributes` preserves Windows wrapper CRLF checkouts while normalizing Git text and treating the wrapper JAR as binary.
 - Gradle launcher support was widened from a JDK-17-only check to the supported 17–26 range after verifying the bundled JBR 25. New runtime combinations need their own native verification.
+- The review's SDK-reference issue was treated as a portability defect worth correcting before handoff; a standard `SDKROOT` reference replaces the missing SDK-specific path.
+
+Computer control remains with the user. Android IDE completion is now confirmed; runtime screens, untested hosts/toolchains, release flows, and HarmonyOS remain outside the verified results. Project-scoped Java 25 selection and one-build-per-platform concurrency are intentional constraints; using a different runtime or simultaneous builds of the same target requires an explicit configuration change.

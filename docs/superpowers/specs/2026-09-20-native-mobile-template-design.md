@@ -2,7 +2,7 @@
 
 Date: 2026-09-20
 
-Status: Approved by the user on 2026-09-20. Implementation is in progress; both native shells and their command layer have built successfully.
+Status: Implemented and reviewed on 2026-09-20. Both native shells, shared commands, and build isolation are verified; both IDE builds are user-confirmed. Runtime screen checks remain unverified after computer control was handed to the user.
 
 Execution update: The user prefers Android Studio's bundled JDK for this new template while retaining JDK 17 for older projects. Gradle 9.4.1 supports launcher JDKs 17–26; the bundled JBR 25.0.3 passed Android build/lint verification. Android Studio generated project daemon criteria selecting Java 25. Keep runtime selection project-scoped and retain Java 17 bytecode compatibility. This supersedes the implementation plan's original JDK-17-only prerequisite.
 
