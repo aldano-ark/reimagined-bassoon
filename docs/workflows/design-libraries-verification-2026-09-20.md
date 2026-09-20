@@ -84,3 +84,14 @@ Both native preview galleries compile and define light/dark, larger text, RTL, a
 Existing Android app lint upgrade/backup notices remain; the design library has one compile-SDK upgrade notice. Robolectric emits a JDK native-access warning while its tests pass. Xcode emits App Intents metadata notices for targets that do not use that framework. No toolchain upgrade was needed.
 
 During intentional failing XCTest runs, automatic `simctl diagnose` collection took several minutes after assertions finished. Only those test-owned diagnostic child processes were stopped; subsequent component runs used `-collect-test-diagnostics never`, retaining XCTest assertions and result bundles while omitting verbose simulator diagnostic archives. An early scratch-runner edit also interrupted post-run shell reporting; later runs used immutable per-run script copies and completed normally. These scratch helpers are not shipped build tooling.
+
+## Independent review
+
+The independent review found no confirmed Critical or Important issues and no Minor findings worth delaying integration. It reran all 20 command tests successfully and confirmed a clean checkout/whitespace check. Native results were reviewed from the recorded evidence rather than rerun by the reviewer.
+
+The following limits remain explicit:
+
+- The field focus correction is covered for edge activation, disabled state, binding, and error behavior. Selection gestures, marked-text input methods, and caller-applied programmatic focus have not each received a separate native regression check. The native field still performs editing; consumers depending on additional focus interactions should verify those flows.
+- Button minimum height and field-edge targets were exercised. Horizontal touch bounds for extremely short iOS button labels were not separately measured; no width defect was demonstrated.
+- Manual preview appearance, VoiceOver/TalkBack, minimum-OS runs, and physical-device behavior remain unverified beyond the recorded simulator/Robolectric checks.
+- Password fields, masks, navigation, branding, and a larger component catalog remain intentionally outside this version.

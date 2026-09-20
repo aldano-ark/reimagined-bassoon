@@ -42,6 +42,8 @@ Button titles and field/status labels accept `LocalizedStringKey`. Supporting an
 
 The native rounded field keeps its visual metrics inside a minimum 44-point interaction area. Taps in that area request native SwiftUI focus using a simultaneous gesture, while explicit and inherited disabled state prevent activation. Native editing and selection remain on the underlying text field.
 
+The tests cover edge focus, disabled state, and binding updates. Selection gestures, marked-text input methods, and caller-applied programmatic focus have not each been separately verified; check those interactions when a consuming feature depends on them.
+
 `DSStatusView` marks its title as a heading and accepts optional `@ViewBuilder` action content. Use a native control directly when the library does not cover the required behavior.
 
 ## Previews

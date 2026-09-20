@@ -2,7 +2,7 @@
 
 Date: 2026-09-20
 
-Status: Implemented on 2026-09-20 with passing native component, build, and command checks. Independent final review is pending.
+Status: Implemented and independently reviewed on 2026-09-20. Native component, build, release, and command checks pass. Manual visual/screen-reader checks and additional platform environments remain explicitly unverified.
 
 ## Intent and accepted direction
 

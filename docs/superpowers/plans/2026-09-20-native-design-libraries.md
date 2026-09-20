@@ -10,7 +10,7 @@
 
 **Spec:** [Approved native design-library design](../specs/2026-09-20-native-design-libraries-design.md).
 
-**Status:** Implemented with passing native checks; independent final review is pending. Android has 9 passing component tests, iOS has 8 passing interaction tests, and the shared commands have 20 passing tests.
+**Status:** Implemented and independently reviewed. Android has 9 passing component tests, iOS has 8 passing interaction tests, and the shared commands have 20 passing tests. Native builds and release compilation pass; manual visual/screen-reader checks remain unverified.
 
 ## Global Constraints
 
@@ -526,11 +526,11 @@ Update contributor guidance to link the design libraries. Update command documen
 
 - [x] **4. Run the integrated checks and prove isolation.** With command-scoped JBR 25 and the existing SDK environment, run `./tooling/scripts/verify all`. Run Android and iOS `build` commands concurrently from a directory outside the checkout, each with its own log, and verify both artifacts. Run the Python command suite after the final script changes. Compare tracked-file hashes before/after builds and inspect Git status so IDE/package resolution did not rewrite tracked configuration.
 
-- [ ] **5. Record actual evidence and review.** The verification record lists exact component-test names/counts and outcomes, native build/lint results, debug/release/test-target compilation, XCTest simulator execution status, preview definitions, visual checks actually performed, independent/concurrent build results, and any unavailable checks. Do not claim a visual pass from preview compilation. Preserve the user's computer-control preference.
+- [x] **5. Record actual evidence and review.** The verification record lists exact component-test names/counts and outcomes, native build/lint results, debug/release/test-target compilation, XCTest simulator execution status, preview definitions, visual checks actually performed, independent/concurrent build results, and any unavailable checks. Do not claim a visual pass from preview compilation. Preserve the user's computer-control preference.
 
 Use the established native-execution workflow's one independent final code review. Give the reviewer this plan/spec, exact commit range, evidence, and any recorded implementation rulings. Fix substantive issues with reproducing checks, then rerun only affected native checks plus the complete applicable test suite.
 
-- [ ] **6. Commit and hand off.** Check Markdown links and `git diff --check`, commit the shared tooling/docs/evidence as `feat: integrate native design library verification`, and report the feature branch, commits, import paths, preview entry points, verified results, and remaining limitations. Integration into `main` is performed when requested by the user.
+- [x] **6. Commit and hand off.** Check Markdown links and `git diff --check`, commit the shared tooling/docs/evidence as `feat: integrate native design library verification`, and report the feature branch, commits, import paths, preview entry points, verified results, and remaining limitations. Integration into `main` is performed when requested by the user.
 
 ## Self-review and requirement coverage
 
