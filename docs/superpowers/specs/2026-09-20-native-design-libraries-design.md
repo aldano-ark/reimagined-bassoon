@@ -2,7 +2,7 @@
 
 Date: 2026-09-20
 
-Status: Proposed written design for review. The user selected native platform appearance. No implementation changes have been made.
+Status: Approved by the user on 2026-09-20. Native execution remains the session preference. Implementation planning is in progress; library implementation has not started.
 
 ## Intent and accepted direction
 
@@ -28,7 +28,6 @@ apps/android/core/designsystem/
     src/main/.../components/
     src/debug/.../previews/
     src/test/...
-    src/androidTest/...
 
 apps/ios/Packages/Core/DesignSystem/
     Package.swift
@@ -37,7 +36,8 @@ apps/ios/Packages/Core/DesignSystem/
         Foundations/
         Components/
         Previews/
-    Tests/DesignSystemTests/
+
+apps/ios/DesignSystemUITests/
 
 docs/design-system/
     README.md
@@ -130,6 +130,8 @@ When a component's behavior or public interface changes, update its examples and
 8. Document the actual public APIs, native differences, tested environments, command results, and any unverified runtime checks.
 
 Computer control remains with the user. This work does not resume interactive IDE or simulator control. Native compilation and command-line verification remain available; visual preview inspection can be performed by the user and recorded separately.
+
+Test-layout refinement: Android component behavior is exercised with Compose tests under Robolectric in the library's JVM test source set. SwiftUI interaction tests use an Xcode UI-test target and a debug-only app host instead of an empty Swift package test target. The host is selected only by test launch arguments; ordinary app launches retain the neutral screen. Run iOS tests on a separately created test simulator, leaving the user's existing simulator and IDE session alone.
 
 ## Deferred work
 
