@@ -38,6 +38,9 @@ native_doctor() (
             [ -d "$ANDROID_HOME/build-tools/36.0.0" ] || {
                 native_error 'Install build-tools 36.0.0 in ANDROID_HOME with the SDK Manager.'; exit 1;
             }
+            [ -x "$ANDROID_HOME/build-tools/36.0.0/aapt2" ] || {
+                native_error 'Install executable aapt2 from Android build-tools 36.0.0.'; exit 1;
+            }
             [ -x "$NATIVE_ROOT/apps/android/gradlew" ] &&
                 [ -s "$NATIVE_ROOT/apps/android/gradle/wrapper/gradle-wrapper.jar" ] || {
                     native_error 'The checked-in Android Gradle wrapper is missing or not executable.'; exit 1;
@@ -61,9 +64,100 @@ native_doctor() (
             [ -d "$native_ios_sdk" ] || {
                 native_error 'The iOS Simulator SDK path does not exist.'; exit 1;
             }
+            command -v plutil >/dev/null 2>&1 || {
+                native_error 'plutil is required to inspect iOS application metadata.'; exit 1;
+            }
             printf 'iOS Simulator SDK: %s\n' "$native_ios_sdk"
             ;;
     esac
+)
+
+# Read the documented literal settings format, without evaluating input as shell.
+native_setting() (
+    native_settings_file=$1
+    native_settings_key=$2
+    [ -f "$native_settings_file" ] || exit 1
+    case "$native_settings_file" in
+        *.xcconfig) native_decode_xcconfig=1 ;;
+        *) native_decode_xcconfig=0 ;;
+    esac
+    awk -v wanted="$native_settings_key" -v decode="$native_decode_xcconfig" '
+        /^[[:space:]]*(#|\/\/)/ { next }
+        index($0, "=") {
+            name = substr($0, 1, index($0, "=") - 1)
+            value = substr($0, index($0, "=") + 1)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", name)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", value)
+            if (name == wanted) {
+                if (decode) gsub(/\$\(\)/, "", value)
+                result = value
+                count++
+            }
+        }
+        END { if (count != 1 || result == "") exit 1; print result }
+    ' "$native_settings_file"
+)
+
+native_android_artifact() (
+    native_environment=$1
+    native_mode=$2
+    native_suffix=
+    [ "$native_mode" != release ] || native_suffix=-unsigned
+    native_artifact="$NATIVE_ROOT/apps/android/app/build/outputs/apk/$native_environment/$native_mode/app-$native_environment-$native_mode$native_suffix.apk"
+    [ -s "$native_artifact" ] || {
+        native_error "Missing or empty Android artifact: $native_artifact"; exit 1;
+    }
+    native_config="$NATIVE_ROOT/apps/android/config/$native_environment.properties"
+    native_expected_id=$(native_setting "$native_config" APP_ID) &&
+        native_expected_name=$(native_setting "$native_config" APP_DISPLAY_NAME) || {
+            native_error "Invalid identity settings: $native_config"; exit 1;
+        }
+    native_badging=$("$ANDROID_HOME/build-tools/36.0.0/aapt2" dump badging "$native_artifact") || {
+        native_error "Cannot read Android artifact metadata: $native_artifact"; exit 1;
+    }
+    native_actual_id=$(printf '%s\n' "$native_badging" | sed -n "s/^package: name='\([^']*\)'.*/\1/p")
+    native_actual_name=$(printf '%s\n' "$native_badging" | sed -n "s/^application-label:'\(.*\)'$/\1/p")
+    [ "$native_actual_id" = "$native_expected_id" ] || {
+        native_error "APP_ID mismatch in Android artifact: $native_artifact"; exit 1;
+    }
+    [ "$native_actual_name" = "$native_expected_name" ] || {
+        native_error "APP_DISPLAY_NAME mismatch in Android artifact: $native_artifact"; exit 1;
+    }
+    printf 'Artifact: %s\n' "$native_artifact"
+)
+
+native_ios_artifact() (
+    native_environment=$1
+    native_mode=$2
+    native_configuration="$native_mode-$native_environment"
+    native_artifact="$NATIVE_ROOT/.build/ios/Build/Products/$native_configuration-iphonesimulator/NativeTemplate.app"
+    native_plist="$native_artifact/Info.plist"
+    [ -s "$native_artifact/NativeTemplate" ] && [ -x "$native_artifact/NativeTemplate" ] &&
+        [ -s "$native_plist" ] || {
+            native_error "Missing or incomplete iOS artifact: $native_artifact"; exit 1;
+        }
+    native_config="$NATIVE_ROOT/apps/ios/Config/$native_environment.xcconfig"
+    for native_plist_key in CFBundleIdentifier CFBundleDisplayName AppEnvironment APIBaseURL; do
+        case "$native_plist_key" in
+            CFBundleIdentifier) native_setting_key=APP_ID ;;
+            CFBundleDisplayName) native_setting_key=APP_DISPLAY_NAME ;;
+            AppEnvironment) native_setting_key=APP_ENVIRONMENT ;;
+            APIBaseURL) native_setting_key=API_BASE_URL ;;
+        esac
+        native_expected=$(native_setting "$native_config" "$native_setting_key") || {
+            native_error "Invalid $native_setting_key in $native_config"; exit 1;
+        }
+        native_actual=$(plutil -extract "$native_plist_key" raw -o - "$native_plist") || {
+            native_error "Missing $native_plist_key in iOS artifact: $native_configuration"; exit 1;
+        }
+        case "$native_actual" in
+            ''|*'$('* ) native_error "Unresolved $native_plist_key in iOS artifact: $native_configuration"; exit 1 ;;
+        esac
+        [ "$native_actual" = "$native_expected" ] || {
+            native_error "$native_plist_key mismatch in iOS artifact: $native_configuration"; exit 1;
+        }
+    done
+    printf 'Artifact: %s\n' "$native_artifact"
 )
 
 native_compile() (
@@ -73,35 +167,53 @@ native_compile() (
     case "$native_platform" in
         android)
             cd "$NATIVE_ROOT/apps/android" || exit 1
-            set -- --no-daemon :app:assembleDebug
+            set -- --no-daemon
             if [ "$native_action" = verify ]; then
-                set -- "$@" :app:lintDebug :core:designsystem:lintDebug :core:designsystem:testDebugUnitTest
+                for native_environment in Dev Stg Prod; do
+                    for native_mode in Debug Release; do
+                        native_variant="$native_environment$native_mode"
+                        set -- "$@" ":app:assemble$native_variant" ":app:lint$native_variant" ":app:test${native_variant}UnitTest"
+                    done
+                done
+                set -- "$@" :core:designsystem:lintDebug :core:designsystem:testDebugUnitTest
+                native_environments='dev stg prod'
+                native_modes='debug release'
+            else
+                set -- "$@" :app:assembleDevDebug
+                native_environments=dev
+                native_modes=debug
             fi
             ./gradlew "$@" || exit $?
-            native_artifact="$NATIVE_ROOT/apps/android/app/build/outputs/apk/debug/app-debug.apk"
-            [ -s "$native_artifact" ] || {
-                native_error "Missing or empty Android artifact: $native_artifact"; exit 1;
-            }
+            # Only fixed variant names undergo word splitting.
+            for native_environment in $native_environments; do
+                for native_mode in $native_modes; do
+                    native_android_artifact "$native_environment" "$native_mode" || exit $?
+                done
+            done
             ;;
         ios)
-            native_xcode_action=build
+            native_environments=Dev
+            native_modes=Debug
             if [ "$native_action" = verify ]; then
-                native_xcode_action=build-for-testing
+                native_environments='Dev Stg Prod'
+                native_modes='Debug Release'
             fi
-            xcodebuild -project "$NATIVE_ROOT/apps/ios/NativeTemplate.xcodeproj" \
-                -scheme NativeTemplate -configuration Debug \
-                -destination 'generic/platform=iOS Simulator' \
-                -derivedDataPath "$NATIVE_ROOT/.build/ios" \
-                CODE_SIGNING_ALLOWED=NO "$native_xcode_action" || exit $?
-            native_artifact="$NATIVE_ROOT/.build/ios/Build/Products/Debug-iphonesimulator/NativeTemplate.app"
-            [ -s "$native_artifact/NativeTemplate" ] &&
-                [ -x "$native_artifact/NativeTemplate" ] &&
-                [ -s "$native_artifact/Info.plist" ] || {
-                    native_error "Missing or incomplete iOS artifact: $native_artifact"; exit 1;
-                }
+            for native_environment in $native_environments; do
+                for native_mode in $native_modes; do
+                    native_xcode_action=build
+                    if [ "$native_action" = verify ] && [ "$native_mode" = Debug ]; then
+                        native_xcode_action=build-for-testing
+                    fi
+                    xcodebuild -project "$NATIVE_ROOT/apps/ios/NativeTemplate.xcodeproj" \
+                        -scheme "NativeTemplate-$native_environment" -configuration "$native_mode-$native_environment" \
+                        -destination 'generic/platform=iOS Simulator' \
+                        -derivedDataPath "$NATIVE_ROOT/.build/ios" \
+                        CODE_SIGNING_ALLOWED=NO "$native_xcode_action" || exit $?
+                    native_ios_artifact "$native_environment" "$native_mode" || exit $?
+                done
+            done
             ;;
     esac
-    printf 'Artifact: %s\n' "$native_artifact"
 )
 
 native_build() { native_compile "$1" build; }
