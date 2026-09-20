@@ -1,6 +1,6 @@
 # Native environment configuration
 
-Status: approved design, 2026-09-20. Implementation planning is authorized; implementation has not started.
+Status: implemented, 2026-09-21. See [verification evidence](../workflows/native-environments-verification-2026-09-21.md).
 
 ## Purpose
 
@@ -120,7 +120,7 @@ Also execute iOS app tests and existing component UI tests on a dedicated simula
 
 Record compilation, lint, executed tests, IDE import/build, and simultaneous installation/launch as separate evidence. Missing tools or unrun checks remain unverified. Simulator builds do not establish device signing, release archives, distribution, or store readiness.
 
-This document records a design only. No application, build, or test changes have been implemented or verified as part of writing it.
+Implementation and measured results are recorded in the linked verification evidence; unrun checks remain explicitly unverified.
 
 ## Native references
 

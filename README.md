@@ -1,6 +1,6 @@
 # Native Mobile Template
 
-A monorepo for one product with independent native Android and iOS applications, plus a planned HarmonyOS integration point. Each app currently displays only `NativeTemplate`.
+A monorepo for one product with independent native Android and iOS applications, plus a planned HarmonyOS integration point. Each app demonstrates native dev/staging/production configuration and a dummy API request URL.
 
 ## Start here
 
@@ -26,28 +26,34 @@ From the repository root:
 
 Use `all` instead of a platform to run both. Each platform command checks only its own prerequisites. `all` attempts both and fails if either fails; HarmonyOS is excluded until implemented. The shared commands use POSIX shell on macOS/Linux; Android also retains the normal Windows Gradle wrapper.
 
-`verify android` builds, runs app/library lint, and executes the design library's Robolectric component tests. `verify ios` compiles the app/package and UI-test target for a generic iOS Simulator destination and checks the app artifact. iOS interaction tests run separately on a dedicated simulator; see the [design-library guide](docs/design-system/README.md).
+`build` selects dev Debug. `verify android` builds, lints, and unit-tests all six app variants and executes the design library's Robolectric component tests. `verify ios` compiles app/unit/UI tests for all three Debug configurations, builds all three Release configurations, and checks each app's identity and configuration. Execute iOS tests separately on a dedicated simulator; see the [iOS guide](apps/ios/README.md#execute-tests).
 
 Build outputs:
 
-- Android APK: `apps/android/app/build/outputs/apk/debug/app-debug.apk`
-- iOS app: `.build/ios/Build/Products/Debug-iphonesimulator/NativeTemplate.app`
+- Android APK: `apps/android/app/build/outputs/apk/dev/debug/app-dev-debug.apk`
+- iOS app: `.build/ios/Build/Products/Debug-Dev-iphonesimulator/NativeTemplate.app`
 - Logs: `.build/logs/<platform>/<command>.log`
 
 The commands also work by absolute path from another working directory. One Android and one iOS build can run concurrently; concurrent builds of the same platform require separate checkouts/output directories. Native commands remain documented in the platform READMEs.
+
+## Environment configuration
+
+Android uses `apps/android/config/{dev,stg,prod}.properties`; iOS uses `apps/ios/Config/{Dev,Stg,Prod}.xcconfig`. The native IDE selects the flavour or scheme. All three app identities can coexist, and every environment supports Debug and Release builds. No `.env` files or root generation step are needed.
+
+The example constructs a `GET /health` request from the selected base URL and displays it without sending traffic to the dummy endpoint. See the [environment design](docs/specs/2026-09-20-native-environments.md) and each platform README for editing/renaming instructions.
 
 ## Repository map
 
 ```text
 apps/android/          Kotlin/Compose app and native design-system module
-apps/ios/              Swift/SwiftUI app, design-system package, and UI tests
+apps/ios/              Swift/SwiftUI app, design-system package, unit and UI tests
 apps/harmonyos/        Planned platform boundary
 contracts/             Future shared schemas and behavioral fixtures
 docs/architecture/     Boundaries and verified toolchains
 docs/decisions/        Architecture decisions and their rationale
 docs/design-system/    Component contracts, native differences, and previews
 docs/workflows/        Development and verification guidance
-docs/specs/            Future product behavior specifications
+docs/specs/            Behavior specifications and environment contract
 tooling/scripts/       Platform commands
 tooling/tests/         Command behavior tests
 tooling/templates/     Feature specs, work items, and decisions
@@ -69,6 +75,6 @@ A task defines its scope and authorized completion boundary. Contributors implem
 2. Rename the Android application and iOS target using their platform README checklists. Update shared command/test artifact paths when changing target names.
 3. Write the first feature's behavior in `docs/specs/`, including applicable platforms and acceptance criteria.
 4. Add feature modules/packages as needed and keep dependency direction explicit.
-5. Add CI, signing, release environments, and store assets when the product needs them.
+5. Replace the dummy endpoints in both native configuration sets, then add CI, signing, and store assets when the product needs them.
 
 See the [architecture](docs/architecture/overview.md), [toolchain baseline](docs/architecture/toolchains.md), and [measured verification record](docs/workflows/verification-2026-09-20.md). This template does not select a license for your product; choose one appropriate to its use and preserve third-party notices such as the Gradle wrapper's license headers.

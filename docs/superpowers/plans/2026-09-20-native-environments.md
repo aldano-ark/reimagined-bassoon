@@ -10,7 +10,7 @@
 
 **Spec:** [Approved native environment design](../../specs/2026-09-20-native-environments.md).
 
-**Status:** Ready for plan review; all implementation steps remain unchecked.
+**Status:** Implementation and native/runtime/isolation verification complete; independent final review in progress.
 
 ## Global Constraints
 
@@ -62,7 +62,7 @@ All work is one feature. Tasks 1 and 2 own disjoint native files; Task 3 owns sh
 | Shared commands | `tooling/scripts/lib.sh` | Default dev build, verification matrices, artifact/metadata checks |
 | Shared tests | `tooling/tests/test_commands.py`; new `tooling/tests/test_environment_configuration.py` | Fake native dispatch, failure behavior, and cross-platform configuration parity |
 | Current guides | `apps/android/README.md`, `apps/ios/README.md`, `apps/ios/Packages/Core/DesignSystem/README.md`, `docs/architecture/overview.md`, `docs/design-system/README.md`, `docs/workflows/development.md`, `docs/workflows/verification.md` | Correct commands, defaults, example behavior, rename instructions |
-| Decision/evidence | `docs/decisions/0002-native-environment-configuration.md`; `docs/workflows/native-environments-verification-2026-09-20.md` | Chosen boundary and measured results/limitations |
+| Decision/evidence | `docs/decisions/0002-native-environment-configuration.md`; `docs/workflows/native-environments-verification-2026-09-21.md` | Chosen boundary and measured results/limitations |
 
 Keep historical specs/plans and verification records unchanged except the approved status of this feature's spec. Search current guidance for obsolete scheme/artifact references during Task 4.
 
@@ -90,9 +90,9 @@ internal data class ApiRequest(val method: String, val uri: java.net.URI)
 
 Gradle tasks follow `:app:assemble{Dev,Stg,Prod}{Debug,Release}`, `:app:lint{Dev,Stg,Prod}{Debug,Release}`, and `:app:test{Dev,Stg,Prod}{Debug,Release}UnitTest`. Debug APKs use `app/build/outputs/apk/<env>/debug/app-<env>-debug.apk`; unsigned Release APKs use `app/build/outputs/apk/<env>/release/app-<env>-release-unsigned.apk`.
 
-- [ ] **1. Establish baseline and execution isolation.** Read both approved documents, root/platform instructions, and development/verification guides. Record the base commit and clean/dirty state. Run `python3 -m unittest discover -s tooling/tests -v` before modifying shared files. Run both doctors and record actual statuses. Do not infer native build success from doctor output.
+- [x] **1. Establish baseline and execution isolation.** Read both approved documents, root/platform instructions, and development/verification guides. Record the base commit and clean/dirty state. Run `python3 -m unittest discover -s tooling/tests -v` before modifying shared files. Run both doctors and record actual statuses. Do not infer native build success from doctor output.
 
-- [ ] **2. Add the existing JUnit dependency and write failing pure configuration tests.** Add `testImplementation(libs.junit)` in the app. Before adding flavours, run the new pure tests with the existing `:app:testDebugUnitTest` task. Cover all keys and every invalid input below with assertions on the offending key, not exception existence alone.
+- [x] **2. Add the existing JUnit dependency and write failing pure configuration tests.** Add `testImplementation(libs.junit)` in the app. Before adding flavours, run the new pure tests with the existing `:app:testDebugUnitTest` task. Cover all keys and every invalid input below with assertions on the offending key, not exception existence alone.
 
 ```kotlin
 @Test fun stagingConfigPreservesItsValues() {
@@ -119,7 +119,7 @@ Gradle tasks follow `:app:assemble{Dev,Stg,Prod}{Debug,Release}`, `:app:lint{Dev
 
 Use JUnit imports `org.junit.Test` and `org.junit.Assert.*`. Add table cases for unknown environment `qa`, whitespace-only identity/name, and an environment containing surrounding whitespace. Expected first run: compilation fails because `AppConfig` does not exist. Record that as the intended red step.
 
-- [ ] **3. Implement the pure configuration model.** Keep parsing independent of Android APIs. Required values must be nonblank, have no surrounding whitespace or control characters; reject whitespace anywhere in URLs. Parse the URI with a key-specific exception, check HTTPS case-insensitively, require a host, and reject user info/query/fragment. Do not include credentials or an invalid URL's full value in an error message.
+- [x] **3. Implement the pure configuration model.** Keep parsing independent of Android APIs. Required values must be nonblank, have no surrounding whitespace or control characters; reject whitespace anywhere in URLs. Parse the URI with a key-specific exception, check HTTPS case-insensitively, require a host, and reject user info/query/fragment. Do not include credentials or an invalid URL's full value in an error message.
 
 ```kotlin
 internal data class AppConfig private constructor(
@@ -157,7 +157,7 @@ internal data class AppConfig private constructor(
 
 Include `import java.net.URI` and the enum from the interface. Run `./gradlew --no-daemon :app:testDebugUnitTest` from `apps/android`; expect the new configuration tests to pass before wiring BuildConfig.
 
-- [ ] **4. Write failing request tests, then implement the request factory.** Test the actual method and URI, including encoded paths without double encoding:
+- [x] **4. Write failing request tests, then implement the request factory.** Test the actual method and URI, including encoded paths without double encoding:
 
 ```kotlin
 @Test fun healthRequestPreservesBasePathAndEncoding() {
@@ -188,7 +188,7 @@ internal class ApiRequestFactory(private val baseUrl: URI) {
 
 The constructor consumes a validated base URI from AppConfig. There is no transport, asynchronous work, network permission, or fallback URL.
 
-- [ ] **5. Add native environment files.** Use these exact four keys; files use one literal `KEY=value` per line, UTF-8, and no interpolation or inline comments. Keep that simple format documented for parity/artifact checks.
+- [x] **5. Add native environment files.** Use these exact four keys; files use one literal `KEY=value` per line, UTF-8, and no interpolation or inline comments. Keep that simple format documented for parity/artifact checks.
 
 ```properties
 # apps/android/config/dev.properties
@@ -214,7 +214,7 @@ APP_DISPLAY_NAME=NativeTemplate
 API_BASE_URL=https://api.example.com
 ```
 
-- [ ] **6. Load and validate files in Gradle, then register flavours.** Add imports for `java.net.URI` and `java.util.Properties` above the existing plugins block, then this configuration loader after plugins. Errors name the file/key; invalid input never selects a fallback environment.
+- [x] **6. Load and validate files in Gradle, then register flavours.** Add imports for `java.net.URI` and `java.util.Properties` above the existing plugins block, then this configuration loader after plugins. Errors name the file/key; invalid input never selects a fallback environment.
 
 ```kotlin
 val environmentConfigurations = listOf("dev", "stg", "prod").associateWith { name ->
@@ -279,7 +279,7 @@ testOptions.unitTests.all {
 
 Remove the old `app_name` declaration from the main strings file to avoid a duplicate generated resource. Do not add a debug identity suffix or configure release signing. Existing Java/SDK/compiler/library settings remain intact.
 
-- [ ] **7. Add the compiled configuration test before its BuildConfig adapter.** `BuildConfigurationTest` loads the selected properties file using the system property above and compares it to the values actually compiled for that variant:
+- [x] **7. Add the compiled configuration test before its BuildConfig adapter.** `BuildConfigurationTest` loads the selected properties file using the system property above and compares it to the values actually compiled for that variant:
 
 ```kotlin
 @Test fun compiledConfigurationMatchesSelectedNativeFile() {
@@ -309,7 +309,7 @@ fun fromBuildConfig(): AppConfig = parse(
 
 Run app unit tests for all six variants. Release tests are intentional: they establish that the values compiled into release-mode app code retain their environment, while APK metadata checks separately establish identity/name.
 
-- [ ] **8. Wire the read-only demonstration screen.** Create `EnvironmentScreen(config: AppConfig, request: ApiRequest)` with a scrollable Compose Column, `DSSpacing.lg`, native Material text styles, and wrapping text. In MainActivity construct `val config = AppConfig.fromBuildConfig()` and `val request = ApiRequestFactory(config.apiBaseUrl).healthRequest()` once before `setContent`; pass them through the existing DSTheme/Surface. Use these string resources for the display:
+- [x] **8. Wire the read-only demonstration screen.** Create `EnvironmentScreen(config: AppConfig, request: ApiRequest)` with a scrollable Compose Column, `DSSpacing.lg`, native Material text styles, and wrapping text. In MainActivity construct `val config = AppConfig.fromBuildConfig()` and `val request = ApiRequestFactory(config.apiBaseUrl).healthRequest()` once before `setContent`; pass them through the existing DSTheme/Surface. Use these string resources for the display:
 
 ```xml
 <resources>
@@ -321,9 +321,9 @@ Run app unit tests for all six variants. Release tests are intentional: they est
 
 The screen body uses `Text(config.displayName)`, `Text(stringResource(R.string.environment_label, config.environment.value))`, `Text(stringResource(R.string.api_base_url_label, config.apiBaseUrl.toString()))`, and `Text(stringResource(R.string.request_label, request.method, request.uri.toString()))`. Keep safe-drawing padding and avoid fixed heights, ellipsis, transport buttons, or a response panel. Use runtime inspection in Task 4 rather than tests that merely duplicate these static labels.
 
-- [ ] **9. Exercise invalid native configuration and build the matrix.** In a disposable copy of `apps/android` excluding `build`, `.gradle`, and `.kotlin`, remove the staging API key and run `./gradlew --no-daemon :app:assembleStgDebug`; require nonzero exit with the file and `API_BASE_URL`. Restore only the disposable file and repeat with `http://api.example.com`; require nonzero again. Do not intentionally corrupt the user's checkout. Run the real six `assemble` and `lint` tasks plus six app test tasks. Until Task 3 lands, the old root wrapper's artifact paths are obsolete; use native commands and record this temporary integration dependency.
+- [x] **9. Exercise invalid native configuration and build the matrix.** In a disposable copy of `apps/android` excluding `build`, `.gradle`, and `.kotlin`, remove the staging API key and run `./gradlew --no-daemon :app:assembleStgDebug`; require nonzero exit with the file and `API_BASE_URL`. Restore only the disposable file and repeat with `http://api.example.com`; require nonzero again. Do not intentionally corrupt the user's checkout. Run the real six `assemble` and `lint` tasks plus six app test tasks. Until Task 3 lands, the old root wrapper's artifact paths are obsolete; use native commands and record this temporary integration dependency.
 
-- [ ] **10. Update Android usage and commit this deliverable.** Explain config locations, dev default planned for shared commands, the six variants, endpoint editing/rebuild, release unsigned APK paths, and rename locations. Verify only the task-owned diff before a local commit such as `feat(android): add native environment flavours and request example`.
+- [x] **10. Update Android usage and commit this deliverable.** Explain config locations, dev default planned for shared commands, the six variants, endpoint editing/rebuild, release unsigned APK paths, and rename locations. Verify only the task-owned diff before a local commit such as `feat(android): add native environment flavours and request example`.
 
 ## Task 2: iOS configurations, app tests, and request example
 
@@ -347,7 +347,7 @@ enum AppEnvironment: String, CaseIterable { case dev, stg, prod }
 
 App product/executable remains `NativeTemplate.app` / `NativeTemplate`; simulator outputs use `.build/ios/Build/Products/<Configuration>-iphonesimulator/NativeTemplate.app`.
 
-- [ ] **1. Add an app-hosted XCTest target and write failing configuration tests.** Create `AppTests` with product type `com.apple.product-type.bundle.unit-test`, source/framework/resource build phases, dependency and container proxy to `NativeTemplate`, product reference, group, and source references. For the initial Debug/Release configurations use Swift 6, deployment target 17, generated test plist, `TEST_HOST = $(BUILT_PRODUCTS_DIR)/NativeTemplate.app/NativeTemplate`, and `BUNDLE_LOADER = $(TEST_HOST)`. Add the test to the current shared scheme for the red run; Task 2 step 7 replaces that scheme. Its scheme BuildAction entry is enabled for testing only, not Run/Profile/Archive/Analyze.
+- [x] **1. Add an app-hosted XCTest target and write failing configuration tests.** Create `AppTests` with product type `com.apple.product-type.bundle.unit-test`, source/framework/resource build phases, dependency and container proxy to `NativeTemplate`, product reference, group, and source references. For the initial Debug/Release configurations use Swift 6, deployment target 17, generated test plist, `TEST_HOST = $(BUILT_PRODUCTS_DIR)/NativeTemplate.app/NativeTemplate`, and `BUNDLE_LOADER = $(TEST_HOST)`. Add the test to the current shared scheme for the red run; Task 2 step 7 replaces that scheme. Its scheme BuildAction entry is enabled for testing only, not Run/Profile/Archive/Analyze.
 
 Use `import XCTest` and `@testable import NativeTemplate`. Start with a complete test fixture:
 
@@ -395,7 +395,7 @@ final class AppConfigTests: XCTestCase {
 
 Add cases for `qa`, nonstring plist values, blank names/IDs, and a whitespace-padded environment. Run `xcodebuild -project apps/ios/NativeTemplate.xcodeproj -scheme NativeTemplate -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath .build/ios CODE_SIGNING_ALLOWED=NO build-for-testing`; expect missing AppConfig symbols, not an unrelated project-file error.
 
-- [ ] **2. Implement validated AppConfig and ConfigurationError.** Use a private memberwise initializer and the interfaces above. Reject nonstring/absent entries with `.missingValue(key)`; reject empty/padded/control-character values with `.invalidValue(key)`. Environment must exactly match the enum. Use `URL(string: raw, encodingInvalidCharacters: false)` on the existing iOS 17 floor and URLComponents to require HTTPS/host and reject user/password/query/fragment. Reject raw whitespace before parsing. Errors name the invalid key and tell the developer to update configuration and rebuild; they do not include input credentials or substitute a default.
+- [x] **2. Implement validated AppConfig and ConfigurationError.** Use a private memberwise initializer and the interfaces above. Reject nonstring/absent entries with `.missingValue(key)`; reject empty/padded/control-character values with `.invalidValue(key)`. Environment must exactly match the enum. Use `URL(string: raw, encodingInvalidCharacters: false)` on the existing iOS 17 floor and URLComponents to require HTTPS/host and reject user/password/query/fragment. Reject raw whitespace before parsing. Errors name the invalid key and tell the developer to update configuration and rebuild; they do not include input credentials or substitute a default.
 
 ```swift
 enum ConfigurationError: LocalizedError, Equatable {
@@ -471,7 +471,7 @@ struct AppConfig {
 
 Add source references/build membership to the app. Rebuild for testing, then run AppTests on a dedicated simulator using the procedure in Task 4. Compilation alone is not the green XCTest result.
 
-- [ ] **3. Write the request test red, then implement the factory and execute green.** Use this test table in `ApiRequestFactoryTests`; no URLSession or remote service is needed:
+- [x] **3. Write the request test red, then implement the factory and execute green.** Use this test table in `ApiRequestFactoryTests`; no URLSession or remote service is needed:
 
 ```swift
 func testHealthRequestPreservesBasePathAndEncoding() throws {
@@ -508,7 +508,7 @@ struct ApiRequestFactory {
 
 Keep the tested path/encoding contract if the installed Foundation implementation requires an explicit URLComponents append. No response is fabricated and no request is sent.
 
-- [ ] **4. Add native environment leaf files and mode composition.** `Dev.xcconfig`, `Stg.xcconfig`, and `Prod.xcconfig` contain exactly these values. `$()` deliberately expands to empty so the source contains no `//` comment delimiter inside an HTTPS URL.
+- [x] **4. Add native environment leaf files and mode composition.** `Dev.xcconfig`, `Stg.xcconfig`, and `Prod.xcconfig` contain exactly these values. `$()` deliberately expands to empty so the source contains no `//` comment delimiter inside an HTTPS URL.
 
 ```xcconfig
 // Dev.xcconfig
@@ -571,7 +571,7 @@ Each configuration-specific file consists of its two include lines:
 | Debug-Prod.xcconfig | `#include "Debug.xcconfig"` | `#include "Prod.xcconfig"` |
 | Release-Prod.xcconfig | `#include "Release.xcconfig"` | `#include "Prod.xcconfig"` |
 
-- [ ] **5. Add an explicit app plist and migrate build configurations.** The new plist supplies custom keys; retain `GENERATE_INFOPLIST_FILE = YES` so Xcode still merges the existing scene/launch/orientation settings. Set `INFOPLIST_FILE = App/Resources/Info.plist` only on the application target, never the project or test targets. Do not add the plist or xcconfig files to Copy Bundle Resources.
+- [x] **5. Add an explicit app plist and migrate build configurations.** The new plist supplies custom keys; retain `GENERATE_INFOPLIST_FILE = YES` so Xcode still merges the existing scene/launch/orientation settings. Set `INFOPLIST_FILE = App/Resources/Info.plist` only on the application target, never the project or test targets. Do not add the plist or xcconfig files to Copy Bundle Resources.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -596,7 +596,7 @@ Use these target-specific settings, which intentionally reference inherited envi
 
 Set configuration-list defaults to Release-Prod; shared commands select Dev explicitly. Verify all target configuration names match and no Release configuration inherits DEBUG or the app-only plist path into test targets.
 
-- [ ] **6. Compose the normal app startup and error state.** Store configuration once as `private let configuration = Result { try AppConfig.load() }` on NativeTemplateApp. Preserve the `#if DEBUG` test-host branch. Ordinary startup switches on that Result:
+- [x] **6. Compose the normal app startup and error state.** Store configuration once as `private let configuration = Result { try AppConfig.load() }` on NativeTemplateApp. Preserve the `#if DEBUG` test-host branch. Ordinary startup switches on that Result:
 
 ```swift
 @ViewBuilder
@@ -614,7 +614,7 @@ private var configuredContent: some View {
 
 Import DesignSystem into NativeTemplateApp. Define `ContentView(config: AppConfig, request: URLRequest)` using a ScrollView/VStack with native fonts and `DSSpacing.lg`; display name, `Environment: <rawValue>`, `API base URL: <absoluteString>`, and `GET <request URL>`. Use the same semantic labels as Android. Preserve system background and wrapping at large Dynamic Type. The configuration error renders without constructing a request; rebuilding valid configuration is its recovery action.
 
-- [ ] **7. Replace the shared scheme with three environment schemes.** Copy its app build entry and Debug test-host setup. Add AppTests beside DesignSystemUITests in TestAction, both with `skipped = NO`. Use the app's existing BlueprintIdentifier and the actual new AppTests target identifier. Set actions according to this table, then delete the old scheme:
+- [x] **7. Replace the shared scheme with three environment schemes.** Copy its app build entry and Debug test-host setup. Add AppTests beside DesignSystemUITests in TestAction, both with `skipped = NO`. Use the app's existing BlueprintIdentifier and the actual new AppTests target identifier. Set actions according to this table, then delete the old scheme:
 
 | Scheme | Run / Test / Analyze | Profile / Archive |
 | --- | --- | --- |
@@ -624,9 +624,9 @@ Import DesignSystem into NativeTemplateApp. Define `ContentView(config: AppConfi
 
 Shared scheme XML must name the corresponding configuration in each `LaunchAction`, `TestAction`, `AnalyzeAction`, `ProfileAction`, and `ArchiveAction`. Test bundles are built for testing only. Preserve the existing app MacroExpansion reference so app-hosted tests load the right app.
 
-- [ ] **8. Verify the resolved configurations and tests.** Run `xcodebuild -list -project apps/ios/NativeTemplate.xcodeproj`. For each row above, run Debug `build-for-testing` and Release `build`, and inspect the produced plist with `plutil -extract <key> raw -o - <plist>` for `CFBundleIdentifier`, `CFBundleDisplayName`, `AppEnvironment`, and `APIBaseURL`. Compare all four against the leaf file after resolving its `$()` escape. Inspect `-showBuildSettings` for each configuration to ensure Debug has DEBUG and Release does not. Add an AppTests check that loading Bundle.main returns a known environment with the proper ID suffix. Run AppTests for all three Debug schemes on the dedicated simulator.
+- [x] **8. Verify the resolved configurations and tests.** Run `xcodebuild -list -project apps/ios/NativeTemplate.xcodeproj`. For each row above, run Debug `build-for-testing` and Release `build`, and inspect the produced plist with `plutil -extract <key> raw -o - <plist>` for `CFBundleIdentifier`, `CFBundleDisplayName`, `AppEnvironment`, and `APIBaseURL`. Compare all four against the leaf file after resolving its `$()` escape. Inspect `-showBuildSettings` for each configuration to ensure Debug has DEBUG and Release does not. Add an AppTests check that loading Bundle.main returns a known environment with the proper ID suffix. Run AppTests for all three Debug schemes on the dedicated simulator.
 
-- [ ] **9. Update native usage and commit the iOS deliverable.** Document scheme selection, native endpoint edits/rebuilds, explicit app plist, simulator paths, all app/test rename settings, and dedicated-simulator test commands. Update the iOS design-system README to use `NativeTemplate-Dev` / `Debug-Dev`, with all three schemes including its tests. Commit only task-owned files after the checks, for example `feat(ios): add native environment schemes and request example`.
+- [x] **9. Update native usage and commit the iOS deliverable.** Document scheme selection, native endpoint edits/rebuilds, explicit app plist, simulator paths, all app/test rename settings, and dedicated-simulator test commands. Update the iOS design-system README to use `NativeTemplate-Dev` / `Debug-Dev`, with all three schemes including its tests. Commit only task-owned files after the checks, for example `feat(ios): add native environment schemes and request example`.
 
 ## Task 3: Shared verification matrix and configuration parity
 
@@ -636,7 +636,7 @@ Shared scheme XML must name the corresponding configuration in each `LaunchActio
 
 **Produces:** Unchanged command syntax; `build` selects dev Debug; `verify` validates all six variants; all existing dispatch/failure/logging guarantees remain.
 
-- [ ] **1. Extend fake tooling and add failing matrix tests.** The current FAKE_TOOL only recognizes one unflavoured Android build and one Debug iOS build. Update it to accept the following exact expected task sets, use variant-specific output paths, and write a real test plist with Python `plistlib`.
+- [x] **1. Extend fake tooling and add failing matrix tests.** The current FAKE_TOOL only recognizes one unflavoured Android build and one Debug iOS build. Update it to accept the following exact expected task sets, use variant-specific output paths, and write a real test plist with Python `plistlib`.
 
 Android verify uses one Gradle invocation starting `--no-daemon`, followed by assemble/lint/test tasks for DevDebug, DevRelease, StgDebug, StgRelease, ProdDebug, and ProdRelease, then the existing library lint and component-test tasks once. Android build uses only `:app:assembleDevDebug`.
 
@@ -674,7 +674,7 @@ def test_verify_dispatches_all_ios_variants(self):
 
 Run the suite before changing the real dispatcher. Expect matrix/default-artifact assertions to fail because the real commands still select unflavoured Debug.
 
-- [ ] **2. Add failure cases that target later artifacts and source/compiled mismatches.** Extend fake controls with `NATIVE_FAKE_FAIL_VARIANT`, `NATIVE_FAKE_MISSING_VARIANT`, `NATIVE_FAKE_BAD_ID_VARIANT`, `NATIVE_FAKE_BAD_NAME_VARIANT`, and `NATIVE_FAKE_BAD_URL_VARIANT`. Use `stgRelease` / `Release-Stg` values to isolate a later build. Preserve existing native-status controls and add an app-test failure status distinct from library-test failure.
+- [x] **2. Add failure cases that target later artifacts and source/compiled mismatches.** Extend fake controls with `NATIVE_FAKE_FAIL_VARIANT`, `NATIVE_FAKE_MISSING_VARIANT`, `NATIVE_FAKE_BAD_ID_VARIANT`, `NATIVE_FAKE_BAD_NAME_VARIANT`, and `NATIVE_FAKE_BAD_URL_VARIANT`. Use `stgRelease` / `Release-Stg` values to isolate a later build. Preserve existing native-status controls and add an app-test failure status distinct from library-test failure.
 
 ```python
 def test_missing_staging_release_artifact_does_not_pass(self):
@@ -693,7 +693,7 @@ def test_wrong_ios_endpoint_does_not_pass(self):
 
 Also assert ID/name mismatches fail on both platforms, a later native failure retains its exact exit status despite earlier artifacts, and the aggregate command still attempts iOS after Android fails. Preserve all existing invalid-usage, paths-with-spaces, prerequisite isolation, concurrent-output, library-test, and iOS-test-compilation cases. Update their expected default artifact paths without removing their assertions.
 
-- [ ] **3. Add small native-settings readers and artifact validation helpers.** Keep these internal POSIX functions in lib.sh:
+- [x] **3. Add small native-settings readers and artifact validation helpers.** Keep these internal POSIX functions in lib.sh:
 
 ```sh
 native_setting() (
@@ -738,7 +738,7 @@ Define `native_ios_artifact <EnvironmentTitle> <Mode>` to check the executable a
 
 Reject unresolved `$(` expressions and blank/missing metadata. Return 1 with the configuration and key on a mismatch. Require plutil only for iOS, preserving platform prerequisite independence.
 
-- [ ] **4. Change native_compile to select and check the matrix.** Android assembles task arguments without eval or parsing Gradle task names from user input:
+- [x] **4. Change native_compile to select and check the matrix.** Android assembles task arguments without eval or parsing Gradle task names from user input:
 
 ```sh
 set -- --no-daemon
@@ -760,7 +760,7 @@ After successful Gradle execution, call `native_android_artifact` for dev/debug 
 
 For iOS choose `native_environments='Dev'` / `native_modes='Debug'` on build and `native_environments='Dev Stg Prod'` / `native_modes='Debug Release'` on verify. Loop over these fixed lists. Choose build-for-testing only when verifying Debug. Use the existing xcodebuild argument structure with `-scheme "NativeTemplate-$native_environment" -configuration "$native_mode-$native_environment"`, then call `native_ios_artifact` immediately after each successful invocation. Propagate the first native/artifact failure within the platform. Leave native_dispatch's aggregate behavior and per-platform logging intact.
 
-- [ ] **5. Add repository configuration parity and scheme-contract tests.** The new test module uses only pathlib, unittest, xml.etree.ElementTree, and tempfile for malformed-input fixtures. Define `REPO = Path(__file__).resolve().parents[2]` and this private leaf reader. Decode `$()` only in xcconfig files; an Android literal must not be changed by the verification parser.
+- [x] **5. Add repository configuration parity and scheme-contract tests.** The new test module uses only pathlib, unittest, xml.etree.ElementTree, and tempfile for malformed-input fixtures. Define `REPO = Path(__file__).resolve().parents[2]` and this private leaf reader. Decode `$()` only in xcconfig files; an Android literal must not be changed by the verification parser.
 
 ```python
 def read_leaf(path):
@@ -796,7 +796,7 @@ def test_native_leaf_configuration_agrees(self):
 
 Parse each shared scheme and assert its Run/Test/Analyze Debug mapping, Profile/Archive Release mapping, AppTests and DesignSystemUITests entries, and app MacroExpansion reference. These tests protect executable build interfaces, not file formatting. Use small temporary fixtures to prove duplicate keys and mismatched endpoint values fail. A shared endpoint edit is made in both native leaf files, not in a third table of hardcoded endpoints in the tests.
 
-- [ ] **6. Run the entire command suite and native verifications, then commit.** Run `python3 -m unittest discover -s tooling/tests -v`, `./tooling/scripts/doctor android`, `./tooling/scripts/doctor ios`, `./tooling/scripts/verify android`, and `./tooling/scripts/verify ios`. Inspect every exit status and report test compilation separately from execution. Do not broaden tests repeatedly after passing without a new change or unresolved concern. Commit the checked shared tooling deliverable as `feat(tooling): verify all native environments`.
+- [x] **6. Run the entire command suite and native verifications, then commit.** Run `python3 -m unittest discover -s tooling/tests -v`, `./tooling/scripts/doctor android`, `./tooling/scripts/doctor ios`, `./tooling/scripts/verify android`, and `./tooling/scripts/verify ios`. Inspect every exit status and report test compilation separately from execution. Do not broaden tests repeatedly after passing without a new change or unresolved concern. Commit the checked shared tooling deliverable as `feat(tooling): verify all native environments`.
 
 ## Task 4: Runtime evidence, documentation, and final review
 
@@ -806,7 +806,7 @@ Parse each shared scheme and assert its Run/Test/Analyze Debug mapping, Profile/
 
 **Produces:** Evidence for each acceptance scenario, explicit limitations, current usage documentation, and a reviewable local feature change. No publishing, store submission, CI provider integration, or release signing is included.
 
-- [ ] **1. Run iOS tests on a dedicated simulator.** Discover available runtimes/devices with `xcrun simctl list runtimes -j` and `xcrun simctl list devicetypes -j`. Create a new test-owned iPhone simulator from an installed compatible pair; assign its UUID to `NATIVE_ENV_TEST_DEVICE`. Never select `booted` or delete an existing device. Boot and wait for readiness. For each environment, run AppTests and the existing component UI suite:
+- [x] **1. Run iOS tests on a dedicated simulator.** Discover available runtimes/devices with `xcrun simctl list runtimes -j` and `xcrun simctl list devicetypes -j`. Create a new test-owned iPhone simulator from an installed compatible pair; assign its UUID to `NATIVE_ENV_TEST_DEVICE`. Never select `booted` or delete an existing device. Boot and wait for readiness. For each environment, run AppTests and the existing component UI suite:
 
 ```sh
 xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
@@ -821,9 +821,9 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
 
 Use corresponding Stg/Prod configuration and unique result/output paths for the other two runs. Handle an existing result directory by choosing a fresh run-specific path, not deleting someone else's evidence. These signed simulator test builds are separate from unsigned generic-simulator verification.
 
-- [ ] **2. Install and launch all three iOS identities together.** Install each Debug app from its dedicated test build to the same dedicated simulator. Launch by the exact bundle IDs in the contract, without `--design-system-tests`. Use simctl listapps to confirm all three remain installed, and capture each screen with `xcrun simctl io "$NATIVE_ENV_TEST_DEVICE" screenshot <task-owned-output.png>`. Inspect screenshots for the name, environment, full endpoint, and matching health request. Repeat a screen inspection with enlarged text and a longer endpoint in a disposable checkout if needed to exercise wrapping. Record only observed UI evidence. Shut down/delete only the simulator created for this task after retaining results and screenshots.
+- [x] **2. Install and launch all three iOS identities together.** Install each Debug app from its dedicated test build to the same dedicated simulator. Launch by the exact bundle IDs in the contract, without `--design-system-tests`. Use simctl listapps to confirm all three remain installed, and capture each screen with `xcrun simctl io "$NATIVE_ENV_TEST_DEVICE" screenshot <task-owned-output.png>`. Inspect screenshots for the name, environment, full endpoint, and matching health request. Repeat a screen inspection with enlarged text and a longer endpoint in a disposable checkout if needed to exercise wrapping. Record only observed UI evidence. Shut down/delete only the simulator created for this task after retaining results and screenshots.
 
-- [ ] **3. Inspect all three Android identities on a dedicated runtime.** Discover installed emulator images/AVDs and adb devices. Use or create only a task-owned disposable emulator; do not select a user's device implicitly. Set `NATIVE_ENV_ANDROID_DEVICE` to its serial, install all three Debug APKs with `adb -s "$NATIVE_ENV_ANDROID_DEVICE" install -r <apk>`, and launch each with an explicit component:
+- [x] **3. Inspect all three Android identities on a dedicated runtime.** Discover installed emulator images/AVDs and adb devices. Use or create only a task-owned disposable emulator; do not select a user's device implicitly. Set `NATIVE_ENV_ANDROID_DEVICE` to its serial, install all three Debug APKs with `adb -s "$NATIVE_ENV_ANDROID_DEVICE" install -r <apk>`, and launch each with an explicit component:
 
 ```sh
 adb -s "$NATIVE_ENV_ANDROID_DEVICE" shell am start -W \
@@ -832,11 +832,11 @@ adb -s "$NATIVE_ENV_ANDROID_DEVICE" shell am start -W \
 
 Use the staging/production application IDs with the same Kotlin activity class. Confirm package coexistence and inspect screen captures for each environment. With larger font scale on this dedicated emulator, check full URL wrapping/scrolling. Preserve the prior setting for cleanup. If no usable image/runtime is installed, report Android launch evidence as unverified and continue unaffected checks; a build pass does not replace it.
 
-- [ ] **4. Prove configuration edits and independent native builds.** In a disposable checkout/copy, change only the dev endpoint on each platform to `https://dev-api.example.com/v2/`, build the dev app, and verify the constructed request is `https://dev-api.example.com/v2/health` using the native tests and runtime example. Restore/discard only task-owned scratch changes. Run direct Gradle from `apps/android` and direct xcodebuild from `apps/ios` to prove no root generator is required. IDE import/build evidence is recorded only if actually observed through an authorized IDE session; command-line builds alone leave it unverified.
+- [x] **4. Prove configuration edits and independent native builds.** In a disposable checkout/copy, change only the dev endpoint on each platform to `https://dev-api.example.com/v2/`, build the dev app, and verify the constructed request is `https://dev-api.example.com/v2/health` using the native tests and runtime example. Restore/discard only task-owned scratch changes. Run direct Gradle from `apps/android` and direct xcodebuild from `apps/ios` to prove no root generator is required. IDE import/build evidence is recorded only if actually observed through an authorized IDE session; command-line builds alone leave it unverified.
 
-- [ ] **5. Complete required build-isolation checks.** Follow `docs/workflows/verification.md`: native clean, Android then iOS then Android; one Android and one iOS build concurrently from a directory outside the repo using absolute script paths; confirm artifact identities, separate logs/statuses, and unchanged tracked input hashes. Use a task-specific `NATIVE_ENV_REPO` variable for the checkout path. Preserve stdout and exit statuses separately; do not label aggregate success after one background command failed. Run at most one build per platform at a time. Native caches and generated outputs remain ignored.
+- [x] **5. Complete required build-isolation checks.** Follow `docs/workflows/verification.md`: native clean, Android then iOS then Android; one Android and one iOS build concurrently from a directory outside the repo using absolute script paths; confirm artifact identities, separate logs/statuses, and unchanged tracked input hashes. Use a task-specific `NATIVE_ENV_REPO` variable for the checkout path. Preserve stdout and exit statuses separately; do not label aggregate success after one background command failed. Run at most one build per platform at a time. Native caches and generated outputs remain ignored.
 
-- [ ] **6. Write the architecture decision and current usage documentation.** Use `tooling/templates/decision.md` for `0002-native-environment-configuration.md`: accepted native files, build-time selection, app-owned config/request types, independent builds, duplicated public values checked for parity, and rejected `.env`/runtime-switching alternatives. Link the approved spec and evidence record. Update current guides to the exact new commands and artifact paths; include this everyday example:
+- [x] **6. Write the architecture decision and current usage documentation.** Use `tooling/templates/decision.md` for `0002-native-environment-configuration.md`: accepted native files, build-time selection, app-owned config/request types, independent builds, duplicated public values checked for parity, and rejected `.env`/runtime-switching alternatives. Link the approved spec and evidence record. Update current guides to the exact new commands and artifact paths; include this everyday example:
 
 ```sh
 # From repository root: default dev Debug builds.

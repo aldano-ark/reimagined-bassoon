@@ -52,7 +52,7 @@ Supplied labels and descriptions are localized by the consuming app. Internal lo
 - [Android gallery](../../apps/android/core/designsystem/src/debug/java/com/example/nativetemplate/designsystem/previews/DesignSystemPreviews.kt): light, dark, enlarged text, and RTL, with normal/disabled/loading/error examples.
 - [SwiftUI gallery](../../apps/ios/Packages/Core/DesignSystem/Sources/DesignSystem/Previews/DesignSystemPreviews.swift): matching state coverage using native environment overrides.
 
-Previews are debug-only. The iOS test host is also debug-only and selected solely by test launch arguments. Ordinary app launches retain the neutral `NativeTemplate` screen.
+Previews are debug-only. The iOS test host is also debug-only and selected solely by test launch arguments. Ordinary app launches show the environment configuration and request example, using native text and the existing theme/spacing.
 
 ## Verification
 
@@ -62,7 +62,7 @@ Previews are debug-only. The iOS test host is also debug-only and selected solel
 python3 -m unittest discover -s tooling/tests -v
 ```
 
-Android verification builds the app, runs app/library lint, and executes Robolectric component tests. iOS verification compiles the app/package and UI-test target; execute the separate XCTest command in the [iOS guide](../../apps/ios/Packages/Core/DesignSystem/README.md) on a dedicated simulator to test interactions.
+Android verification builds, lints, and tests all six app variants and executes the existing library checks once. iOS verification compiles app/unit/UI tests for all three Debug configurations and builds all three Release configurations; execute the separate XCTest command in the [iOS guide](../../apps/ios/Packages/Core/DesignSystem/README.md) on a dedicated simulator to test interactions.
 
 Native UI tests and preview compilation have limited scope: record actual execution results separately from visual inspection, screen-reader inspection, and minimum-OS/device testing. See the [measured design-library verification](../workflows/design-libraries-verification-2026-09-20.md).
 

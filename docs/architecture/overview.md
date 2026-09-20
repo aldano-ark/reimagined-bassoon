@@ -12,13 +12,13 @@ One product lives in independent native platform projects. Shared documents desc
 
 Core cannot import features or the app. A feature cannot import another feature's implementation. Coordinate feature navigation at the app boundary; extract a small shared interface only when a consumer needs it.
 
-Android expresses build boundaries with Gradle modules and Kotlin visibility. iOS uses local Swift packages, target dependencies, and Swift access control. Each platform has an application and a core design library. The iOS UI-test target hosts component verification through a debug-only fixture. Other reserved directories describe extension points without adding dummy compiled libraries.
+Android expresses build boundaries with Gradle modules and Kotlin visibility. iOS uses local Swift packages, target dependencies, and Swift access control. Each platform has an application and a core design library. The iOS UI-test target hosts component verification through a debug-only fixture, and an app unit-test target covers configuration and request construction. Other reserved directories describe extension points without adding dummy compiled libraries.
 
 ## State and data
 
 Screens render explicit state and send actions to feature-owned state holders. Android can use ViewModels; iOS can use Swift observation with appropriate actor isolation. Follow platform idioms rather than requiring the same classes across languages.
 
-When external data exists, isolate access behind repositories or service interfaces. Add a domain/use-case layer for business rules that benefit from that separation. Model recoverable failures as explicit state with a recovery action. The empty shell has no external services or data layer.
+When external data exists, isolate access behind repositories or service interfaces. Add a domain/use-case layer for business rules that benefit from that separation. Model recoverable failures as explicit state with a recovery action. The template has no external services or data layer. Its app-owned environment example constructs a health request from validated configuration without sending it.
 
 ## What is shared
 
@@ -28,6 +28,12 @@ When external data exists, isolate access behind repositories or service interfa
 - Component purposes and state contracts in the [design-library guide](../design-system/README.md), with native implementations and styling on each platform.
 
 Runtime implementations, native dependency manifests, and IDE projects belong to their platforms. Product parity means equivalent required behavior, not identical code or screen structure.
+
+## Environment configuration
+
+Each platform owns checked-in public environment settings and selects them through its native build system. The app converts generated BuildConfig values or resolved Info.plist entries into immutable configuration, then passes the base URL to a request factory. The UI receives display values and the constructed request. Core libraries remain unaware of environments.
+
+The native configurations agree on environment names, identities, and endpoints through the [environment contract](../specs/2026-09-20-native-environments.md). Shared parity tests check that agreement; neither native build depends on those tests or on the other platform. See [decision 0002](../decisions/0002-native-environment-configuration.md).
 
 ## Build isolation
 

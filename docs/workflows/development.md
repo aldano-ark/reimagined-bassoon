@@ -20,4 +20,4 @@ Record commands, results, artifacts, and unverified checks in the work item. Des
 
 ## Release and automation
 
-The initial template defines local development checks. Configure your chosen CI provider to invoke these same commands on suitable runners: Android can run independently of macOS; iOS requires macOS and Xcode. Add signing, environments, and release workflows when needed. An agent runner can schedule work items and consume their evidence without changing the native project structure.
+The initial template defines local development checks. Configure your chosen CI provider to invoke these same commands on suitable runners: Android can run independently of macOS; iOS requires macOS and Xcode. Dev, staging, and production native configurations are included. Replace the dummy endpoints in both platforms, and add signing and release workflows when needed. An agent runner can schedule work items and consume their evidence without changing the native project structure.
