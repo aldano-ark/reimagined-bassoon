@@ -3,6 +3,16 @@ import SwiftUI
 @main
 struct NativeTemplateApp: App {
     var body: some Scene {
-        WindowGroup { ContentView() }
+        WindowGroup {
+#if DEBUG
+            if ProcessInfo.processInfo.arguments.contains("--design-system-tests") {
+                DesignSystemTestHost()
+            } else {
+                ContentView()
+            }
+#else
+            ContentView()
+#endif
+        }
     }
 }

@@ -19,7 +19,7 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
   -derivedDataPath .build/ios CODE_SIGNING_ALLOWED=NO build
 ```
 
-Shared entry points: `./tooling/scripts/build ios` and `./tooling/scripts/verify ios`. Both compile the app and validate its executable and `Info.plist`. They do not run simulator tests.
+Shared entry points: `./tooling/scripts/build ios` and `./tooling/scripts/verify ios`. Both compile the app and validate its executable and `Info.plist`. Verification uses `build-for-testing` to compile the local [DesignSystem package](Packages/Core/DesignSystem/README.md) and its app-hosted UI tests; it does not execute them. The package guide documents running `DesignSystemUITests` on a dedicated simulator.
 
 Application: `.build/ios/Build/Products/Debug-iphonesimulator/NativeTemplate.app`.
 
