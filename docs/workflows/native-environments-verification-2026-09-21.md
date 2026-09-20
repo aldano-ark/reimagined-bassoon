@@ -17,7 +17,7 @@ iOS: Xcode 27.0 (27A266a), simulator SDK/runtime 27.0, Swift 6 language mode, an
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Both platform doctor commands | Passed, exit 0 | Required SDK/JDK/Xcode, aapt2, and plutil available |
-| Shared Python suite | 35 tests passed | Real shell dispatch with fake native tools; parity and scheme contracts |
+| Shared Python suite | 35 tests passed | Real shell dispatch with fake native tools; parity and scheme contracts; an isolated endpoint-drift probe also failed as expected |
 | Android native variant matrix | All 6 built and linted | dev/stg/prod × Debug/Release |
 | Android app tests | 30 passed | 5 tests for each of 6 compiled configurations |
 | Android design-system tests | 9 passed | Existing Robolectric component suite |
@@ -71,6 +71,12 @@ The final isolation checks clean native outputs and rebuild the default dev Debu
 ## Implementation decisions and limits
 
 AGP required explicit resValues enablement and explicit Release host-test registration. The matrix verifies both settings; without them the relevant resources/tasks would not build. Kotlin AppConfig uses a plain immutable class so a generated data-class copy cannot bypass validation; no existing consumer requires copy or structural equality.
+
+An independent review found that Android removed repeated trailing slashes from configured paths. The new repeated-slash case failed before the fix, then passed with the full Android matrix. Both request suites now cover `https://api.example.com/v1//` producing `https://api.example.com/v1//health`. The iOS app suite was executed again for all three schemes; both root native verifications and all 35 shared tests passed after the fix. Stale iOS scheme/title instructions were also corrected.
+
+One minor review finding is deferred: explicit ports above 65535 pass configuration validation. This example constructs requests without sending them; a real transport integration should enforce valid network ports and add DNS/TLS/server tests.
+
+The isolation checks preceded the request-path fix; build wiring did not change afterward. Native verification was rerun on the fixed source.
 
 Native command-line builds, metadata inspection, simulator/emulator launch, and the listed tests are verified. IDE import/build was not exercised in an interactive IDE session. Physical-device signing, release archives, store distribution, minimum-OS runtime behavior, and screen-reader interaction remain unverified.
 

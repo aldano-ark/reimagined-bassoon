@@ -10,7 +10,7 @@
 
 **Spec:** [Approved native environment design](../../specs/2026-09-20-native-environments.md).
 
-**Status:** Implementation and native/runtime/isolation verification complete; independent final review in progress.
+**Status:** Implemented and independently reviewed. Required native/runtime/isolation checks passed; the reviewed path-preservation defect is fixed and regression-tested. Port-range validation is recorded as a deferred minor limitation in the verification evidence.
 
 ## Global Constraints
 
@@ -855,7 +855,7 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
 
 Explain where to edit both platform endpoints, how to rename all identities, why Release can target staging, why the demonstration does not send a request, and that `verify ios` compiles tests but the dedicated simulator command executes them. Update the architecture/design-system descriptions of the former neutral screen and mention the app unit-test target. Keep historical evidence immutable.
 
-- [ ] **7. Record measured results and perform one final independent review.** Structure the evidence document using the work-item template: objective and scope; platform/tool versions; command/exit/result table; test counts; artifact locations; runtime/IDE evidence; isolation results; limitations and next actions. A missing tool is not a pass. Avoid personal paths, credentials, and simulator UUIDs in tracked prose. Use repo-relative ignored result paths.
+- [x] **7. Record measured results and perform one final independent review.** Structure the evidence document using the work-item template: objective and scope; platform/tool versions; command/exit/result table; test counts; artifact locations; runtime/IDE evidence; isolation results; limitations and next actions. A missing tool is not a pass. Avoid personal paths, credentials, and simulator UUIDs in tracked prose. Use repo-relative ignored result paths.
 
 Review the final diff against all nine spec acceptance scenarios, the five review-focus items, native boundaries, and existing instruction files. Run `git diff --check` and verify Git status before committing documentation. Run the requesting-code-review workflow for one independent final review if executing natively; fix actionable findings and rerun only affected checks. Do not claim acceptance scenarios with missing runtime or IDE evidence are verified. Commit the final documentation/evidence as `docs: record native environment workflow and verification`.
 

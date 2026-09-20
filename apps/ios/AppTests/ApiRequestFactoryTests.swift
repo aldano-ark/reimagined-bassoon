@@ -8,6 +8,7 @@ final class ApiRequestFactoryTests: XCTestCase {
             ("https://stg-api.example.com/", "https://stg-api.example.com/health"),
             ("https://api.example.com/v1", "https://api.example.com/v1/health"),
             ("https://api.example.com/v1/", "https://api.example.com/v1/health"),
+            ("https://api.example.com/v1//", "https://api.example.com/v1//health"),
             ("https://api.example.com:8443/a%2Fb/", "https://api.example.com:8443/a%2Fb/health"),
         ]
         for (raw, expected) in cases {

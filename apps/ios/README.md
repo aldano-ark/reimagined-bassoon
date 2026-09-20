@@ -1,6 +1,6 @@
 # iOS
 
-An independent Swift/SwiftUI application targeting iOS 17 and later. Open `NativeTemplate.xcodeproj` in Xcode. The project and `NativeTemplate` scheme are checked in; no project generator, Ruby, Android SDK, or Gradle is required.
+An independent Swift/SwiftUI application targeting iOS 17 and later. Open `NativeTemplate.xcodeproj` in Xcode. The project and all three environment schemes are checked in; no project generator, Ruby, Android SDK, or Gradle is required.
 
 ## Prerequisites
 
@@ -64,7 +64,7 @@ Use matching Stg/Prod schemes and configurations with separate output paths for 
 
 1. Change `APP_ID` and `APP_DISPLAY_NAME` in all three environment xcconfig files. Change the app product name in its target settings. Update the identity contract in app/shared tests.
 2. Rename the project, target, and all three shared schemes through Xcode when changing `NativeTemplate`; keep the schemes shared.
-3. Rename `NativeTemplateApp` and its file, updating project references, and change the neutral screen title in `ContentView.swift`.
+3. Rename `NativeTemplateApp` and its file, updating project references. The screen title comes from `APP_DISPLAY_NAME`.
 4. Add a product app icon to the asset catalog and select it in the target settings.
 5. Update the project/scheme and artifact references in shared tooling and command tests after changing target/product names. Update the Android name/identifier independently.
 6. Update `DesignSystemUITests.TEST_TARGET_NAME`, `AppTests.TEST_HOST`, and `AppTests.BUNDLE_LOADER` when renaming the app product. Test bundle identifiers derive from `APP_ID`; keep both test targets registered in all three schemes.
