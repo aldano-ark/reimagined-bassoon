@@ -1,0 +1,6 @@
+#!/bin/sh
+set -u
+NATIVE_SCRIPT_DIR=$(CDPATH= cd -P "$(dirname "$0")" && pwd) || exit 1
+NATIVE_ROOT=$(CDPATH= cd -P "$NATIVE_SCRIPT_DIR/../.." && pwd) || exit 1
+. "$NATIVE_SCRIPT_DIR/lib.sh"
+native_dispatch doctor "$@"
