@@ -23,9 +23,11 @@ struct DesignSystemTestHost: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.lg) {
                 switch scenario {
-                case "field":
-                    DSTextField("Name", text: $value, supportingText: "Helpful text", errorText: error,
+                case "field", "field-disabled", "field-parent-disabled":
+                    DSTextField("Name", text: $value, isEnabled: scenario != "field-disabled",
+                                supportingText: "Helpful text", errorText: error,
                                 capitalization: .never, autocorrectionDisabled: true)
+                        .disabled(scenario == "field-parent-disabled")
                     Button("Set externally") { value = "Grace" }
                     Button("Show error") { error = "Required" }
                     Text("Value: \(value)").accessibilityIdentifier("field-value")

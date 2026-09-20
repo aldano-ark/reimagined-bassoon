@@ -30,5 +30,6 @@ Application: `.build/ios/Build/Products/Debug-iphonesimulator/NativeTemplate.app
 3. Rename `NativeTemplateApp` and its file, updating project references, and change the neutral screen title in `ContentView.swift`.
 4. Add a product app icon to the asset catalog and select it in the target settings.
 5. Update the project/scheme and artifact references in shared tooling and command tests after changing target/product names. Update the Android name/identifier independently.
+6. Update the UI-test target's `TEST_TARGET_NAME` and bundle identifier when renaming the app target. Keep the test target registered in the shared scheme.
 
 See [feature packages](Packages/Features/README.md) and [core packages](Packages/Core/README.md) before adding packages.

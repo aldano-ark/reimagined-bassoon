@@ -74,6 +74,36 @@ final class DesignSystemUITests: XCTestCase {
     }
 
     @MainActor
+    func testFieldAcceptsTapsAcrossMinimumTouchTarget() {
+        for direction: CGFloat in [-1, 1] {
+            let app = launch("field")
+            let field = app.textFields["Name"]
+            XCTAssertTrue(field.waitForExistence(timeout: 5))
+            let insetFromCenter = max(44, field.frame.height) / 2 - 1
+            field.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .withOffset(CGVector(dx: 0, dy: direction * insetFromCenter)).tap()
+            XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+            field.typeText("Ada")
+            XCTAssertEqual(field.value as? String, "Ada")
+            XCTAssertEqual(app.staticTexts["field-value"].label, "Value: Ada")
+        }
+    }
+
+    @MainActor
+    func testDisabledFieldsDoNotFocusFromExpandedTarget() {
+        for scenario in ["field-disabled", "field-parent-disabled"] {
+            let app = launch(scenario)
+            let field = app.textFields["Name"]
+            XCTAssertTrue(field.waitForExistence(timeout: 5))
+            XCTAssertFalse(field.isEnabled)
+            field.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .withOffset(CGVector(dx: 0, dy: -21)).tap()
+            XCTAssertFalse(app.keyboards.firstMatch.exists)
+            XCTAssertEqual(app.staticTexts["field-value"].label, "Value: ")
+        }
+    }
+
+    @MainActor
     func testLargeTextRtlActionRemainsUsable() {
         let app = launch("buttons", largeRTL: true)
         let button = app.buttons["save-action"]

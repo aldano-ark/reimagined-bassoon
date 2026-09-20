@@ -40,6 +40,8 @@ Button titles and field/status labels accept `LocalizedStringKey`. Supporting an
 
 `DSTextField` forwards native keyboard type, content type, capitalization, autocorrection, submit label, and submit action. Error text replaces supporting text and remains an accessible element after the field. The separate visible label is hidden from accessibility because the field already exposes it. Input is not transformed or validated by the library.
 
+The native rounded field keeps its visual metrics inside a minimum 44-point interaction area. Taps in that area request native SwiftUI focus using a simultaneous gesture, while explicit and inherited disabled state prevent activation. Native editing and selection remain on the underlying text field.
+
 `DSStatusView` marks its title as a heading and accepts optional `@ViewBuilder` action content. Use a native control directly when the library does not cover the required behavior.
 
 ## Previews
@@ -63,4 +65,4 @@ xcodebuild -project apps/ios/NativeTemplate.xcodeproj \
 
 Set `NATIVE_DESIGN_TEST_DEVICE` to a dedicated test simulator's UUID. Automated tests launch a debug-only fixture host using `--design-system-tests` and a scenario argument. Ordinary app launches retain the neutral screen; Release excludes the host and previews.
 
-Tests exercise actions, disabled/loading behavior, parent-disabled state, text binding and error accessibility, status actions, and enlarged-text RTL interaction. They do not establish every visual layout or replace VoiceOver/device inspection.
+Tests exercise actions, disabled/loading behavior, parent-disabled state, text binding and error accessibility, physical taps across the minimum field target, status actions, and enlarged-text RTL interaction. They do not establish every visual layout or replace VoiceOver/device inspection.
