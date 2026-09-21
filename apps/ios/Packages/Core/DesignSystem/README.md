@@ -54,7 +54,9 @@ Open `Sources/DesignSystem/Previews/DesignSystemPreviews.swift` in Xcode. Debug-
 
 All three environment schemes include `DesignSystemUITests`. From the repository root, `./tooling/scripts/verify ios` compiles the package, app, and test target. This is a compilation check, not a test-run result.
 
-Run XCTest on an explicitly selected simulator:
+Run `./tooling/scripts/test ios` to execute app and component tests on an automatically managed dedicated simulator. Use `test ios all` for all three environments. Prerequisites, retained results, and cleanup behavior are in the [iOS guide](../../../README.md#execute-tests).
+
+For a component-only native run on an explicitly selected simulator:
 
 ```sh
 xcodebuild -project apps/ios/NativeTemplate.xcodeproj \

@@ -18,7 +18,7 @@
 | Swift | Validated with 6.4; language mode 6 | Xcode toolchain / project |
 | iOS Simulator SDK | Validated with 27.0 | Selected Xcode |
 
-These are the verified baseline versions, not a promise that arbitrary combinations work. Native builds require neither a monorepo framework nor Node.js/Ruby/Python. The shell-command test suite uses Python 3's standard library separately from native builds.
+These are the verified baseline versions, not a promise that arbitrary combinations work. Native builds require neither a monorepo framework nor Node.js/Ruby/Python. The command test suite uses Python 3's standard library separately from native builds. The optional `test ios` runner requires Python 3.9+ and an available iOS Simulator runtime; it uses the standard library without package installation.
 
 Keep exact dependency versions and the official Gradle wrapper checked in. For upgrades, consult the [AGP compatibility table](https://developer.android.com/build/releases/agp-9-2-0-release-notes), [Gradle Java compatibility matrix](https://docs.gradle.org/current/userguide/compatibility.html), [Kotlin support guidance](https://developer.android.com/build/migrate-to-built-in-kotlin), and [Compose setup](https://developer.android.com/develop/ui/compose/setup-compose-dependencies-and-compiler), then run both affected native checks. Update the Android doctor prerequisites with SDK/JDK baseline changes.
 

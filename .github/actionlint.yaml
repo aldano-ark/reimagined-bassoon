@@ -1,0 +1,6 @@
+# actionlint's built-in hosted-runner catalog does not yet include this preview.
+# This is a GitHub-hosted label, not a repository-managed runner:
+# https://github.com/actions/runner-images/issues/14404
+self-hosted-runner:
+  labels:
+    - xcode-27
