@@ -24,7 +24,6 @@
 - The initial Android build has one application module; the initial iOS project has one application target.
 - Project caches, build outputs, logs, IDE user settings, `local.properties`, and signing material are ignored by version control.
 - Product features, network/storage implementations, shared design assets, release environments, signing automation, hosted CI, and agent-runner integrations are separate additions to this foundation.
-- HarmonyOS is documentation-only and excluded from `all` commands in this version.
 - No trivial app tests: native compilation and Android lint verify the empty shells; command tests verify consequential dispatch and failure behavior.
 - Native builds must not modify the other platform's project, tracked files, or global SDK selections.
 
@@ -352,7 +351,7 @@ def test_paths_with_spaces_from_another_directory(self):
     self.assertTrue(self.artifact('ios').exists())
 
 def test_invalid_usage_dispatches_nothing(self):
-    for args in [(), ('harmonyos',), ('android', 'extra'), ('--help',)]:
+    for args in [(), ('unsupported',), ('android', 'extra'), ('--help',)]:
         result = self.run_cli('build', *args)
         self.assertEqual(result.returncode, 2)
         self.assertIn('Usage:', result.stderr)
@@ -461,7 +460,7 @@ return "$native_command_status"
 **Files:**
 
 - Create: `README.md`, `AGENTS.md`, `apps/android/AGENTS.md`, `apps/ios/AGENTS.md`.
-- Create: `apps/harmonyos/README.md`, `contracts/README.md`, `docs/specs/README.md`.
+- Create: `contracts/README.md`, `docs/specs/README.md`.
 - Create: `docs/architecture/overview.md`, `docs/architecture/toolchains.md`, `docs/decisions/0001-independent-native-projects.md`.
 - Create: `docs/workflows/development.md`, `docs/workflows/verification.md`, `docs/workflows/verification-2026-09-20.md`.
 - Create: `tooling/templates/feature-spec.md`, `tooling/templates/work-item.md`, `tooling/templates/decision.md`.
@@ -471,7 +470,7 @@ return "$native_command_status"
 
 - [x] **1. Write discoverable contributor rules.** Root `AGENTS.md` links architecture, platform instructions, commands, and work templates. State the app → features/core → core dependency direction, explicit interfaces for feature coordination, module creation only for real responsibilities, scoped task ownership, and reporting unrun checks as unverified. Platform guidance adds Kotlin/Gradle and Swift/Xcode details without duplicating the shared policy. Keep routine authorized edits/checks autonomous; do not import a specific agent product's approval workflow into this template.
 
-`README.md` includes a repository map, independent setup/build quickstarts, the three shared commands, artifact paths, links to platform READMEs, and HarmonyOS's planned status. `toolchains.md` records pinned versions and validated host/tool versions. The architecture decision states why runtime implementations remain independent and why feature/core directories initially contain guidance rather than dummy libraries. The contract/spec READMEs state what future content belongs there and require no invented product schemas.
+`README.md` includes a repository map, independent setup/build quickstarts, the three shared commands, artifact paths, and links to platform READMEs. `toolchains.md` records pinned versions and validated host/tool versions. The architecture decision states why runtime implementations remain independent and why feature/core directories initially contain guidance rather than dummy libraries. The contract/spec READMEs state what future content belongs there and require no invented product schemas.
 
 - [x] **2. Add lightweight work templates with explicit fields.** A feature spec has Purpose, User-visible behavior, Platform coverage, Shared contracts, Acceptance scenarios, and Verification. A work item has Objective, Authorized completion boundary, Scope/files, Affected platforms, Dependencies, Acceptance criteria, Commands, Results/evidence, and Handoff/blockers. An architecture decision has Context, Decision, Alternatives, Consequences, and Validation. These are reusable blank forms, not unfinished implementation documents. Add concise field instructions rather than made-up sample product requirements.
 
@@ -530,7 +529,6 @@ Check both artifacts and their separate logs. The fake-tool tests cover paths wi
 | Work from another directory and spaces in paths | Tasks 3 and 4: fixture tests and real absolute-path invocation |
 | Build cleanliness and ignored machine outputs | Task 4, step 6: tracked-file hashes and Git checks |
 | Human/agent workflows and reusable templates | Task 4, steps 1–2: linked guidance and work definitions |
-| HarmonyOS extension point | Task 4: planned-platform README; Task 3: unsupported-platform test |
 | Honest build, lint, IDE, and launch evidence | Task 4, steps 3 and 7–8: measured verification note |
 
 No independent product subsystem needs its own plan: the two application shells and shared command layer form one build-isolation deliverable. The platform implementations can be reviewed independently, but the integration evidence requires both.

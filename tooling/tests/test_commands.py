@@ -214,7 +214,7 @@ class CommandTests(unittest.TestCase):
 
     def test_invalid_usage_dispatches_nothing(self):
         for action in ('doctor', 'build', 'verify'):
-            for args in ((), ('harmonyos',), ('android', 'extra'), ('--help',)):
+            for args in ((), ('unsupported',), ('android', 'extra'), ('--help',)):
                 with self.subTest(action=action, args=args):
                     result = self.run_cli(action, *args)
                     self.assertEqual(result.returncode, 2)

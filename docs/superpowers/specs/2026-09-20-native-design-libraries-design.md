@@ -8,7 +8,7 @@ Status: Implemented and independently reviewed on 2026-09-20. Native component, 
 
 Prepare a reusable design library for each implemented native platform in the mobile monorepo. Android should feel native to Android, and iOS should feel native to iOS. The template still has no product domain or brand.
 
-Provide predictable UI foundations and documented component behavior that humans and AI agents can discover and reuse. Preserve independent platform builds, existing deployment minimums, and the project-scoped Android Studio JDK configuration. HarmonyOS remains a documented future integration point.
+Provide predictable UI foundations and documented component behavior that humans and AI agents can discover and reuse. Preserve independent platform builds, existing deployment minimums, and the project-scoped Android Studio JDK configuration.
 
 The user selected native appearance over a matching custom visual system. Shared concepts describe component purpose and behavior; each platform owns its native implementation, visual details, and APIs.
 
@@ -135,7 +135,7 @@ Test-layout refinement: Android component behavior is exercised with Compose tes
 
 ## Deferred work
 
-HarmonyOS implementation, a custom brand, token generation, asset/icon/font distribution, broad component catalogs, navigation components, complex forms, animations, and screenshot-baseline infrastructure remain separate additions driven by concrete needs.
+A custom brand, token generation, asset/icon/font distribution, broad component catalogs, navigation components, complex forms, animations, and screenshot-baseline infrastructure remain separate additions driven by concrete needs.
 
 ## Source guidance
 

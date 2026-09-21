@@ -522,7 +522,7 @@ Update fake-tool expected arguments to require the final contracts after the new
 
 - [x] **3. Write discovery and usage documentation.** `docs/design-system/README.md` contains a platform API map, component state matrix, semantic styling differences, minimum-target/text-scaling guidance, preview locations, and exact checks. Include compilable usage examples using the interfaces specified in Tasks 1 and 2. State explicitly that native controls remain the escape hatch for uncovered patterns and that callers own state, validation, async work, navigation, and localization of their supplied copy.
 
-Update contributor guidance to link the design libraries. Update command documentation: Android verification executes component tests; iOS verification compiles tests, while the separate simulator test command executes them. Keep HarmonyOS documentation-only. Record the internal English loading string's resource location for future localization.
+Update contributor guidance to link the design libraries. Update command documentation: Android verification executes component tests; iOS verification compiles tests, while the separate simulator test command executes them. Record the internal English loading string's resource location for future localization.
 
 - [x] **4. Run the integrated checks and prove isolation.** With command-scoped JBR 25 and the existing SDK environment, run `./tooling/scripts/verify all`. Run Android and iOS `build` commands concurrently from a directory outside the checkout, each with its own log, and verify both artifacts. Run the Python command suite after the final script changes. Compare tracked-file hashes before/after builds and inspect Git status so IDE/package resolution did not rewrite tracked configuration.
 

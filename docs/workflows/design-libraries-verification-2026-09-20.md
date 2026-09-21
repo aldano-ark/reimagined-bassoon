@@ -79,7 +79,7 @@ Four new shell expectations failed before dispatch changes, then all 20 passed. 
 
 ## Previews, limits, and execution decisions
 
-Both native preview galleries compile and define light/dark, larger text, RTL, and component-state variants. They have not been manually inspected in the IDE during this task. Automated interaction/layout checks do not constitute a full visual, VoiceOver, or TalkBack audit. No minimum-OS device run, Android instrumented-device run, alternate host run, or HarmonyOS implementation is claimed.
+Both native preview galleries compile and define light/dark, larger text, RTL, and component-state variants. They have not been manually inspected in the IDE during this task. Automated interaction/layout checks do not constitute a full visual, VoiceOver, or TalkBack audit. No minimum-OS device run, Android instrumented-device run, or alternate host run is claimed.
 
 Existing Android app lint upgrade/backup notices remain; the design library has one compile-SDK upgrade notice. Robolectric emits a JDK native-access warning while its tests pass. Xcode emits App Intents metadata notices for targets that do not use that framework. No toolchain upgrade was needed.
 

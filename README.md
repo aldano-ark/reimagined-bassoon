@@ -1,6 +1,6 @@
 # Native Mobile Template
 
-A monorepo for one product with independent native Android and iOS applications, plus a planned HarmonyOS integration point. Each app demonstrates native dev/staging/production configuration and a dummy API request URL.
+A monorepo for one product with independent native Android and iOS applications. Each app demonstrates native dev/staging/production configuration and a dummy API request URL.
 
 ## Start here
 
@@ -8,7 +8,6 @@ A monorepo for one product with independent native Android and iOS applications,
 | --- | --- | --- |
 | Android | `apps/android/` in Android Studio | Compatible JDK, Android SDK 36, build tools 36.0.0 |
 | iOS | `apps/ios/NativeTemplate.xcodeproj` in Xcode | macOS, Xcode with the iOS Simulator SDK |
-| HarmonyOS | Documentation only | Defined when native support is added |
 
 Follow the [Android setup](apps/android/README.md) or [iOS setup](apps/ios/README.md). Android commands need a compatible Java launcher through `JAVA_HOME` or PATH, and `ANDROID_HOME`. Android Studio's bundled JDK 25 works with this Gradle version; you can scope its selection to this project while older projects keep JDK 17. Xcode selection can be scoped through `DEVELOPER_DIR`.
 
@@ -24,7 +23,7 @@ From the repository root:
 ./tooling/scripts/verify ios
 ```
 
-Use `all` instead of a platform to run both. Each platform command checks only its own prerequisites. `all` attempts both and fails if either fails; HarmonyOS is excluded until implemented. The shared commands use POSIX shell on macOS/Linux; Android also retains the normal Windows Gradle wrapper.
+Use `all` instead of a platform to run both. Each platform command checks only its own prerequisites. `all` attempts both and fails if either fails. The shared commands use POSIX shell on macOS/Linux; Android also retains the normal Windows Gradle wrapper.
 
 `build` selects dev Debug. `verify android` builds, lints, and unit-tests all six app variants and executes the design library's Robolectric component tests. `verify ios` compiles app/unit/UI tests for all three Debug configurations, builds all three Release configurations, and checks each app's identity and configuration. Execute iOS tests separately on a dedicated simulator; see the [iOS guide](apps/ios/README.md#execute-tests).
 
@@ -47,7 +46,6 @@ The example constructs a `GET /health` request from the selected base URL and di
 ```text
 apps/android/          Kotlin/Compose app and native design-system module
 apps/ios/              Swift/SwiftUI app, design-system package, unit and UI tests
-apps/harmonyos/        Planned platform boundary
 contracts/             Future shared schemas and behavioral fixtures
 docs/architecture/     Boundaries and verified toolchains
 docs/decisions/        Architecture decisions and their rationale

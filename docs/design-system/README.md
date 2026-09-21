@@ -9,7 +9,7 @@ Use the shared component purposes below with native implementations on each plat
 | Android | Gradle `:core:designsystem` | `com.example.nativetemplate.designsystem.theme` and `.components`; [Android guide](../../apps/android/core/designsystem/README.md) |
 | iOS | Local Swift package product `DesignSystem` | `import DesignSystem`; [iOS guide](../../apps/ios/Packages/Core/DesignSystem/README.md) |
 
-Apps and features may depend on these core libraries. The libraries cannot depend on app startup, features, services, or the other platform. HarmonyOS remains a planned integration point.
+Apps and features may depend on these core libraries. The libraries cannot depend on app startup, features, services, or the other platform.
 
 ## Component behavior
 

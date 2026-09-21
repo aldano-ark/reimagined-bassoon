@@ -4,7 +4,7 @@ Status: Accepted, 2026-09-20.
 
 ## Context
 
-The template serves one future product on Kotlin/Android and Swift/iOS, with HarmonyOS planned. No product behavior is defined yet. Humans and agents need clear boundaries and repeatable checks.
+The template serves one future product on Kotlin/Android and Swift/iOS. No product behavior is defined yet. Humans and agents need clear boundaries and repeatable checks.
 
 ## Decision
 

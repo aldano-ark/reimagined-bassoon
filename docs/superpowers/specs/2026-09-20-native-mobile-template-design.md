@@ -8,7 +8,7 @@ Execution update: The user prefers Android Studio's bundled JDK for this new tem
 
 ## Intent and agreed scope
 
-Create a reusable repository template for one product implemented independently on Android in Kotlin and iOS in Swift. Reserve a clear integration point for HarmonyOS, whose implementation comes later. There is no product domain or sample product to implement.
+Create a reusable repository template for one product implemented independently on Android in Kotlin and iOS in Swift. There is no product domain or sample product to implement.
 
 The template must support humans and AI agents working together, and agents executing well-defined work autonomously. Contributors should be able to discover conventions, identify the affected platform, make a scoped change, run the appropriate checks, and leave reviewable evidence.
 
@@ -47,15 +47,14 @@ These are concrete design choices for review, rather than additional requirement
 │   │   ├── settings.gradle.kts
 │   │   ├── build.gradle.kts
 │   │   └── gradle.properties
-│   ├── ios/
-│   │   ├── README.md
-│   │   ├── AGENTS.md
-│   │   ├── NativeTemplate.xcodeproj/
-│   │   ├── App/
-│   │   └── Packages/
-│   │       ├── Features/README.md
-│   │       └── Core/README.md
-│   └── harmonyos/README.md
+│   └── ios/
+│       ├── README.md
+│       ├── AGENTS.md
+│       ├── NativeTemplate.xcodeproj/
+│       ├── App/
+│       └── Packages/
+│           ├── Features/README.md
+│           └── Core/README.md
 ├── contracts/README.md
 ├── docs/
 │   ├── architecture/
@@ -170,7 +169,7 @@ The restricted session could not communicate with CoreSimulator services. This i
 
 ## Deferred work
 
-HarmonyOS remains a documented future platform boundary and is excluded from `all` until an actual native project, prerequisites, and verification contract are added. Product features, network/storage implementations, shared design assets, release environments, signing automation, hosted CI, and agent-runner integrations are separate additions to this foundation.
+Product features, network/storage implementations, shared design assets, release environments, signing automation, hosted CI, and agent-runner integrations are separate additions to this foundation.
 
 ## Source guidance
 
