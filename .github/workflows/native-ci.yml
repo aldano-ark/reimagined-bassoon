@@ -58,7 +58,7 @@ jobs:
         with:
           cache-provider: basic
       - name: Ensure required Android SDK packages
-        run: sdkmanager 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-36" "build-tools;36.0.0"'
       - name: Check Android prerequisites
         run: ./tooling/scripts/doctor android
       - name: Verify all Android variants
