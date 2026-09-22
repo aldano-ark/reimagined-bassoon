@@ -2,6 +2,8 @@
 
 A monorepo for one product with independent native Android and iOS applications. Each app demonstrates native dev/staging/production configuration and a dummy API request URL.
 
+[Explore the project landing page](https://aldano-ark.github.io/reimagined-bassoon/) · [Landing page source and publishing](docs/workflows/landing-page.md)
+
 ## Start here
 
 | Platform | Open in the native IDE | Prerequisites |
