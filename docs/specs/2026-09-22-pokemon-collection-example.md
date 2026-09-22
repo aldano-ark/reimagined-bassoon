@@ -27,6 +27,10 @@ Figma: https://www.figma.com/design/cCvOm5AHDpUjPgUlYnzuoO/?node-id=0-1
 - Match the Figma sage accent (`#236B51`), spacing, entire-card image aspect ratio, two-column gallery at ordinary phone text sizes, and Android's 8 dp top content padding. Respect safe areas, large text, accessibility labels, native touch targets, and dark appearance. Native chrome can adapt to the installed OS.
 - Reuse supplied design-library buttons, fields, status composition, and spacing; use native controls for uncovered patterns. Add feature previews and meaningful state/UI tests without changing core components.
 
+### Compact CTA refinement
+
+Collection, wishlist, details, add-copy, and recovery actions use slimmer visible buttons with tighter vertical spacing. Android keeps `DSButton` and its native 48 dp interaction reservation while allowing a roughly 36 dp visual capsule at standard text size. iOS uses an example-local native button composition with a 30-point label minimum plus regular system chrome, producing a 44-point standard CTA; the shared template button's label minimum remains unchanged. Both layouts grow with larger text instead of imposing a maximum height. Keep label typography, enabled states, confirmations, and action behavior intact.
+
 ## Acceptance evidence
 
 Build and lint the example Android app, execute its state and Compose interaction tests; build and execute the iOS example unit/UI tests on a dedicated simulator. Cover empty start, search, add/cancel, wishlist toggle, finish/condition/note persistence, restart, deletion, validation, corrupt storage, and failed writes. Visually inspect native screens when tooling permits. Run template doctor/verification commands, and show an empty diff for `apps/`, `tooling/`, and `.github/` to establish isolation. Document exact commands, outcomes, and any unverified runtime/device checks. Deliver a reviewable branch/PR; do not merge it.

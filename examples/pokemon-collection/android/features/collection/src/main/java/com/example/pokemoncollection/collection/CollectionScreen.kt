@@ -128,14 +128,14 @@ import kotlinx.coroutines.withContext
             }
         },
         bottomBar = {
-            if (store.loaded && !adding) Column(Modifier.navigationBarsPadding().padding(horizontal = DSSpacing.xl, vertical = DSSpacing.md), verticalArrangement = Arrangement.spacedBy(DSSpacing.sm)) {
+            if (store.loaded && !adding) Column(Modifier.navigationBarsPadding().padding(horizontal = DSSpacing.xl, vertical = DSSpacing.sm), verticalArrangement = Arrangement.spacedBy(DSSpacing.xs)) {
                 if (selectedCard != null) {
-                    DSButton("Add a copy", { store.clearFeedback(); adding = true }, modifier = Modifier.fillMaxWidth(), enabled = !busy)
+                    DSButton("Add a copy", { store.clearFeedback(); adding = true }, modifier = Modifier.fillMaxWidth().compactCollectionAction(), enabled = !busy)
                     val wished = store.state.wishlist.containsKey(selectedCard.id)
-                    DSButton(if (wished) "Remove from wishlist" else "Add to wishlist", { perform({ store.setWishlist(selectedCard.id, !wished) }) }, modifier = Modifier.fillMaxWidth(), intent = DSButtonIntent.Secondary, enabled = !busy)
+                    DSButton(if (wished) "Remove from wishlist" else "Add to wishlist", { perform({ store.setWishlist(selectedCard.id, !wished) }) }, modifier = Modifier.fillMaxWidth().compactCollectionAction(), intent = DSButtonIntent.Secondary, enabled = !busy)
                 } else if (!catalogOpen) {
                     val empty = if (selectedTab == Scope.Collection) store.state.uniqueCards == 0 else store.state.wishlist.isEmpty()
-                    DSButton(if (selectedTab == Scope.Wishlist) "Find cards" else if (empty) "Find your first card" else "Add cards", { store.clearFeedback(); catalogOpen = true }, modifier = Modifier.fillMaxWidth().testTag("browse"), enabled = !busy)
+                    DSButton(if (selectedTab == Scope.Wishlist) "Find cards" else if (empty) "Find your first card" else "Add cards", { store.clearFeedback(); catalogOpen = true }, modifier = Modifier.fillMaxWidth().testTag("browse").compactCollectionAction(), enabled = !busy)
                 }
             }
         },
@@ -144,7 +144,7 @@ import kotlinx.coroutines.withContext
             if (!store.loaded) {
                 Box(Modifier.fillMaxSize().padding(DSSpacing.xl), contentAlignment = Alignment.Center) {
                     DSStatusView(if (store.error == null) "Opening your collection" else "Could not open your collection", description = store.error ?: "Opening saved cards…", kind = if (store.error == null) DSStatusKind.Neutral else DSStatusKind.Error) {
-                        if (store.error != null) DSButton("Retry", { perform({ store.retry() }) }, loading = busy)
+                        if (store.error != null) DSButton("Retry", { perform({ store.retry() }) }, modifier = Modifier.compactCollectionAction(), loading = busy)
                         else CircularProgressIndicator()
                     }
                 }
@@ -270,7 +270,7 @@ import kotlinx.coroutines.withContext
                 Text("${entry.quantity} ${if (entry.quantity == 1) "copy" else "copies"} · ${entry.finish}", fontWeight = FontWeight.Medium)
                 Text(entry.condition, style = MaterialTheme.typography.bodyMedium)
                 if (entry.note.isNotEmpty()) Text(entry.note, style = MaterialTheme.typography.bodyMedium)
-                DSButton("Delete entry", { onDelete(entry.id) }, modifier = Modifier.testTag("delete-${entry.id}"), intent = DSButtonIntent.Destructive, enabled = enabled)
+                DSButton("Delete entry", { onDelete(entry.id) }, modifier = Modifier.testTag("delete-${entry.id}").compactCollectionAction(), intent = DSButtonIntent.Destructive, enabled = enabled)
             }
         }
     }
@@ -310,7 +310,7 @@ import kotlinx.coroutines.withContext
             DSTextField(note, { note = it; onDraftChange() }, "Note (optional)", Modifier.fillMaxWidth().testTag("note"), enabled = !busy, supportingText = "$noteLength/500 characters", errorText = if (noteLength > 500) "Keep the note to 500 characters or fewer." else null)
             Text("Your collection will have ${copyCount(owned + (amount?.takeIf { it in 1..99 } ?: 0))} of this card.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        DSButton(if (amount == 1) "Add 1 copy" else "Add ${amount ?: 0} copies", { amount?.let { onSave(it, finish, condition, note) } }, modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = DSSpacing.xl, vertical = DSSpacing.md).testTag("save-copy"), enabled = valid && !busy, loading = busy)
+        DSButton(if (amount == 1) "Add 1 copy" else "Add ${amount ?: 0} copies", { amount?.let { onSave(it, finish, condition, note) } }, modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = DSSpacing.xl, vertical = DSSpacing.sm).testTag("save-copy").compactCollectionAction(), enabled = valid && !busy, loading = busy)
     }
 }
 
@@ -337,3 +337,7 @@ private fun status(id: String, state: CollectionState, scope: Scope): String {
 
 private fun copyCount(count: Int): String = "$count ${if (count == 1) "copy" else "copies"}"
 private fun cardCount(count: Int): String = "$count ${if (count == 1) "card" else "cards"}"
+
+// A smaller visual minimum lets the native label/padding define a 36 dp capsule.
+// Material still reserves its 48 dp touch target; text can grow without a height cap.
+private fun Modifier.compactCollectionAction(): Modifier = defaultMinSize(minHeight = 32.dp)

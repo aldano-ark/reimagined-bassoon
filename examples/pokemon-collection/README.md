@@ -9,7 +9,9 @@ This example lives beside the reusable starter. The projects in `apps/android/` 
   <img src="docs/screenshots/android-collection.png" width="240" alt="Android collection showing saved Bulbasaur and Pikachu cards" />
 </p>
 
-Native screenshots from verification, populated through the app's add-copy flow. First launch starts empty.
+Populated collection screenshots from the initial verification. First launch starts empty; the updated compact CTA previews are linked below.
+
+Compact CTA styling: [iOS preview](docs/screenshots/ios-cta.png) · [Android preview](docs/screenshots/android-cta.png). Visible buttons are slimmer while their touch areas and support for larger text remain intact.
 
 ## Try the example
 

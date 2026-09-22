@@ -27,7 +27,7 @@ public struct SavedCardsView: View {
             VStack(alignment: .leading, spacing: DSSpacing.lg) {
                 if let error = store.loadError {
                     DSStatusView("Collection unavailable", description: error, kind: .error) {
-                        DSButton("Retry", action: store.reload).tint(Color("PrimaryButton"))
+                        CollectionActionButton("Retry", action: store.reload).tint(Color("PrimaryButton"))
                     }
                 } else {
                     Text(isCollection ? "\(store.uniqueCards) \(store.uniqueCards == 1 ? "card" : "cards") · \(copyCount(store.totalCopies))" : "\(store.snapshot.wishlist.count) \(store.snapshot.wishlist.count == 1 ? "card" : "cards") you’re looking for")
@@ -93,7 +93,7 @@ public struct SavedCardsView: View {
             .background(Color.accentColor.opacity(0.10), in: RoundedRectangle(cornerRadius: 24))
             .accessibilityHidden(true)
             DSStatusView(isCollection ? "Every collection starts with one card." : "Your wishlist is empty", description: isCollection ? "Find a card you own and add your first copy. Your personal collection grows from here." : "Find a card you’re looking for and add it to your wishlist.") {
-                DSButton(isCollection ? "Find your first card" : "Find a card") { findingCard = true }
+                CollectionActionButton(isCollection ? "Find your first card" : "Find a card") { findingCard = true }
                     .tint(Color("PrimaryButton"))
                     .frame(maxWidth: .infinity)
             }
@@ -253,12 +253,12 @@ private struct CardDetailsView: View {
                 .background(Color("Surface"), in: RoundedRectangle(cornerRadius: 16))
                 if let error = operationError {
                     DSStatusView("Could not save", description: error, kind: .error) {
-                        DSButton("Retry") { if let retryOperation { perform(retryOperation) } }.tint(Color("PrimaryButton"))
+                        CollectionActionButton("Retry") { if let retryOperation { perform(retryOperation) } }.tint(Color("PrimaryButton"))
                     }
                 }
-                VStack(spacing: DSSpacing.sm) {
-                    DSButton("Add a copy") { addingCopy = true }.tint(Color("PrimaryButton")).frame(maxWidth: .infinity)
-                    DSButton(store.isWishlisted(card.id) ? "Remove from wishlist" : "Add to wishlist", intent: .secondary) {
+                VStack(spacing: DSSpacing.xs) {
+                    CollectionActionButton("Add a copy") { addingCopy = true }.tint(Color("PrimaryButton")).frame(maxWidth: .infinity)
+                    CollectionActionButton(store.isWishlisted(card.id) ? "Remove from wishlist" : "Add to wishlist", intent: .secondary) {
                         let included = !store.isWishlisted(card.id)
                         perform { try store.setWishlist(cardID: card.id, included: included) }
                     }.frame(maxWidth: .infinity)
@@ -358,11 +358,11 @@ private struct AddCopyView: View {
                 }
                 Section {
                     if let error = saveError {
-                        DSStatusView("Could not save", description: error, kind: .error) { DSButton("Retry", action: save).tint(Color("PrimaryButton")) }
+                        DSStatusView("Could not save", description: error, kind: .error) { CollectionActionButton("Retry", action: save).tint(Color("PrimaryButton")) }
                     }
                     Text("Your collection will have \(copyCount(store.quantity(of: card.id) + quantity)) of this card.")
                         .font(.footnote).foregroundStyle(.secondary)
-                    DSButton("Add \(copyCount(quantity))", isEnabled: note.count <= 500, action: save)
+                    CollectionActionButton("Add \(copyCount(quantity))", isEnabled: note.count <= 500, action: save)
                         .tint(Color("PrimaryButton"))
                         .accessibilityIdentifier("save-copy")
                         .frame(maxWidth: .infinity)
@@ -404,4 +404,49 @@ private func copyCount(_ count: Int) -> String { "\(count) \(count == 1 ? "copy"
     NavigationStack { SavedCardsView(store: CollectionStore(catalog: [], storage: PreviewStorage()), scope: .wishlist, artworkDirectory: URL(fileURLWithPath: "/")) }
         .preferredColorScheme(.dark).environment(\.dynamicTypeSize, .accessibility3)
 }
+#Preview("Compact actions") {
+    VStack(spacing: DSSpacing.xs) {
+        CollectionActionButton("Add a copy") {}
+        CollectionActionButton("Add to wishlist", intent: .secondary) {}
+        CollectionActionButton("Add a copy", isEnabled: false) {}
+    }
+    .padding(DSSpacing.xl)
+}
 #endif
+
+/// Compact native actions are local to the example. The shared DSButton keeps
+/// its template-sized 44-point label; these use 30 points plus system chrome
+/// for a 44-point standard button, expanding naturally for Dynamic Type.
+private struct CollectionActionButton: View {
+    let title: LocalizedStringKey
+    let intent: DSButtonIntent
+    let isEnabled: Bool
+    let action: () -> Void
+
+    init(_ title: LocalizedStringKey, intent: DSButtonIntent = .primary, isEnabled: Bool = true, action: @escaping () -> Void) {
+        self.title = title
+        self.intent = intent
+        self.isEnabled = isEnabled
+        self.action = action
+    }
+
+    @ViewBuilder var body: some View {
+        switch intent {
+        case .primary: control.buttonStyle(.borderedProminent)
+        case .secondary, .destructive: control.buttonStyle(.bordered)
+        }
+    }
+
+    private var control: some View {
+        Button(role: intent == .destructive ? .destructive : nil, action: action) {
+            Text(title)
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(minHeight: 30)
+        }
+        .controlSize(.regular)
+        .disabled(!isEnabled)
+        .frame(minHeight: 44)
+    }
+}
