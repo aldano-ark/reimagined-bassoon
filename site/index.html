@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#172b37">
+    <meta name="description" content="A thoughtful monorepo for independent native iOS and Android apps. SwiftUI, Jetpack Compose, shared product direction, and a clear development workflow.">
+    <title>Native Mobile Template — One home. Two native worlds.</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="./assets/lakeside-dawn.webp" as="image" fetchpriority="high">
+    <link rel="stylesheet" href="./assets/site.css">
+    <script src="./assets/site.js" defer></script>
+  </head>
+  <body>
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="arrow-up-right" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12"/></symbol>
+      <symbol id="arrow-right" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+      <symbol id="arrow-down" viewBox="0 0 24 24"><path d="M12 4v16m-6-6 6 6 6-6"/></symbol>
+      <symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></symbol>
+      <symbol id="terminal" viewBox="0 0 24 24"><path d="m5 6 6 6-6 6m9 0h6"/></symbol>
+      <symbol id="layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
+      <symbol id="branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 7v10m12-10v2c0 5-12 3-12 8"/></symbol>
+      <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="folder" viewBox="0 0 24 24"><path d="M3 7V5h6l2 2h10v13H3V7Z"/></symbol>
+    </svg>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="wordmark" href="#" aria-label="Native Mobile Template home"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>native <span class="wordmark-slash">/</span> together</a>
+      <nav aria-label="Main navigation">
+        <a class="desktop-link" href="#foundation">The foundation</a>
+        <a class="desktop-link" href="#native">Native by design</a>
+        <a href="#quick-start">Quick start</a>
+        <a class="github-link" href="https://github.com/aldano-ark/reimagined-bassoon">GitHub <svg class="icon"><use href="#arrow-up-right"/></svg></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-image" src="./assets/lakeside-dawn.webp" alt="" width="1672" height="941" fetchpriority="high">
+        <div class="hero-shade"></div>
+        <div class="hero-copy">
+          <p class="eyebrow">A calmer start for your next mobile app</p>
+          <h1 id="hero-title">One home.<br>Two native worlds.</h1>
+          <p class="hero-description">A thoughtful monorepo for iOS and Android.<br class="desktop-break"> Shared direction. Independent apps. Room to make it yours.</p>
+          <div class="hero-actions">
+            <a class="button button-dark" href="https://github.com/aldano-ark/reimagined-bassoon">Explore the repository <svg class="icon"><use href="#arrow-up-right"/></svg></a>
+            <a class="button button-light" href="#foundation">Take a look <svg class="icon"><use href="#arrow-down"/></svg></a>
+          </div>
+        </div>
+        <div class="platforms-wrap">
+          <div class="platform-pair" aria-label="Two independently built native applications">
+            <a class="platform platform-ios" href="https://github.com/aldano-ark/reimagined-bassoon/tree/main/apps/ios">
+              <span class="platform-name">iOS</span><span><strong>Swift + SwiftUI</strong><small>Native from the first line.</small></span>
+              <svg class="icon platform-arrow"><use href="#arrow-up-right"/></svg>
+            </a>
+            <a class="platform platform-android" href="https://github.com/aldano-ark/reimagined-bassoon/tree/main/apps/android">
+              <span class="platform-name">Android</span><span><strong>Kotlin + Jetpack Compose</strong><small>Native from the first line.</small></span>
+              <svg class="icon platform-arrow"><use href="#arrow-up-right"/></svg>
+            </a>
+          </div>
+          <p class="hero-caption">Built independently. Designed to belong together.</p>
+        </div>
+      </section>
+
+      <section class="section foundation" id="foundation" aria-labelledby="foundation-title">
+        <div class="section-intro">
+          <div><p class="eyebrow">01 / The foundation</p><h2 id="foundation-title">A little structure.<br>A lot of possibility.</h2></div>
+          <p class="section-description">Start with a clear home for your product, then let each platform do what it does best. Native projects, useful foundations, and a workflow you can actually follow.</p>
+        </div>
+        <div class="features">
+          <article><span class="feature-icon"><svg class="icon"><use href="#branch"/></svg></span><h3>Independent by default</h3><p>Open Android Studio or Xcode and get to work. Each app owns its build, dependencies, and native runtime.</p><a class="text-link" href="https://github.com/aldano-ark/reimagined-bassoon/blob/main/docs/architecture/overview.md">Explore the architecture <svg class="icon"><use href="#arrow-right"/></svg></a></article>
+          <article><span class="feature-icon"><svg class="icon"><use href="#layers"/></svg></span><h3>Shared understanding</h3><p>Keep product behavior, architecture decisions, and component contracts in one easy-to-find place.</p><a class="text-link" href="https://github.com/aldano-ark/reimagined-bassoon/blob/main/docs/design-system/README.md">Meet the design libraries <svg class="icon"><use href="#arrow-right"/></svg></a></article>
+          <article><span class="feature-icon"><svg class="icon"><use href="#check"/></svg></span><h3>Confidence built in</h3><p>Dev, staging, and production configurations. Platform checks, component tests, and retained CI evidence.</p><a class="text-link" href="https://github.com/aldano-ark/reimagined-bassoon/blob/main/docs/workflows/verification.md">Follow the workflow <svg class="icon"><use href="#arrow-right"/></svg></a></article>
+        </div>
+        <div class="repo-panel">
+          <div class="repo-copy"><span class="tiny-label">A place for everything</span><h3>Share the direction.<br>Keep the native freedom.</h3><p>Product requirements travel together. Runtime code stays with its platform. Add layers when they have a real job to do.</p><a class="text-link" href="https://github.com/aldano-ark/reimagined-bassoon">Take a walk through the repo <svg class="icon"><use href="#arrow-up-right"/></svg></a></div>
+          <div class="repo-tree" aria-label="Repository structure">
+            <div class="tree-title"><span class="brand-mark small" aria-hidden="true"><i></i><i></i></span><span>native-mobile-template</span><span class="tree-badge">one product</span></div>
+            <ul>
+              <li><span><svg class="icon"><use href="#folder"/></svg>apps/android/</span><small>Kotlin + Compose</small></li>
+              <li><span><svg class="icon"><use href="#folder"/></svg>apps/ios/</span><small>Swift + SwiftUI</small></li>
+              <li><span><svg class="icon"><use href="#folder"/></svg>contracts/</span><small>Room for shared schemas</small></li>
+              <li><span><svg class="icon"><use href="#folder"/></svg>docs/</span><small>Behavior + decisions</small></li>
+              <li><span><svg class="icon"><use href="#folder"/></svg>tooling/</span><small>One familiar workflow</small></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="native-section" id="native" aria-labelledby="native-title">
+        <div class="native-inner">
+          <div class="native-copy">
+            <p class="eyebrow">02 / Native by design</p>
+            <h2 id="native-title">Same idea.<br>Each platform’s<br>own expression.</h2>
+            <p>SwiftUI on iOS. Material 3 on Android. Shared component purposes, with the controls, typography, and interactions that feel at home on each device.</p>
+            <div class="example-note"><span class="example-tag">Design study</span><h3>A Pokémon collection, two ways.</h3><p>A supporting Figma example of collection and wishlist flows. This is a design exploration; the template currently ships the environment configuration example.</p></div>
+            <a class="text-link" href="https://www.figma.com/design/cCvOm5AHDpUjPgUlYnzuoO/Native-Android-and-iOS---Pokemon-Card-Collection?node-id=0-1">Explore the example in Figma <svg class="icon"><use href="#arrow-up-right"/></svg></a>
+          </div>
+          <div class="phone-gallery">
+            <figure class="phone-figure ios-figure"><div class="phone-frame"><img src="./assets/ios-collection.webp" width="393" height="852" loading="lazy" alt="iOS Pokémon collection design with card artwork, collection counts, search, and native bottom navigation."></div><figcaption><span class="platform-dot ios-dot"></span>iOS <span>Figma concept</span></figcaption></figure>
+            <figure class="phone-figure android-figure"><div class="phone-frame android-frame"><img src="./assets/android-collection.webp" width="412" height="892" loading="lazy" alt="Android Pokémon collection design with the same cards, search, top tabs, and a bottom Add card action."></div><figcaption><span class="platform-dot android-dot"></span>Android <span>Figma concept</span></figcaption></figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section start-section" id="quick-start" aria-labelledby="start-title">
+        <div class="start-copy"><p class="eyebrow">03 / Your next chapter</p><h2 id="start-title">Make room for<br>your next idea.</h2><p>Clone the repo, check your toolchain, and start on the platform you know. The other one will be right here.</p><a class="button button-dark" href="https://github.com/aldano-ark/reimagined-bassoon#start-here">Read the setup guide <svg class="icon"><use href="#arrow-up-right"/></svg></a></div>
+        <div class="terminal-card">
+          <div class="terminal-top"><div class="terminal-tabs" role="tablist" aria-label="Setup platform"><button type="button" id="tab-ios" role="tab" aria-selected="true" aria-controls="panel-ios" tabindex="0">iOS</button><button type="button" id="tab-android" role="tab" aria-selected="false" aria-controls="panel-android" tabindex="-1">Android</button></div><button class="copy-button" type="button" aria-label="Copy iOS setup commands"><svg class="icon"><use href="#copy"/></svg><span>Copy</span></button></div>
+          <div id="panel-ios" class="terminal-panel" role="tabpanel" aria-labelledby="tab-ios" tabindex="0"><p class="code-comment"># A fresh start</p><pre><code>git clone https://github.com/aldano-ark/reimagined-bassoon.git
+cd reimagined-bassoon
+
+./tooling/scripts/doctor ios
+./tooling/scripts/build ios</code></pre><p class="terminal-hint">Requires macOS and Xcode. <a href="https://github.com/aldano-ark/reimagined-bassoon/blob/main/apps/ios/README.md">iOS prerequisites ↗</a></p></div>
+          <div id="panel-android" class="terminal-panel" role="tabpanel" aria-labelledby="tab-android" tabindex="0" hidden><p class="code-comment"># A fresh start</p><pre><code>git clone https://github.com/aldano-ark/reimagined-bassoon.git
+cd reimagined-bassoon
+
+./tooling/scripts/doctor android
+./tooling/scripts/build android</code></pre><p class="terminal-hint">Requires a compatible JDK and Android SDK. <a href="https://github.com/aldano-ark/reimagined-bassoon/blob/main/apps/android/README.md">Android prerequisites ↗</a></p></div>
+          <p class="copy-status" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div><a class="wordmark" href="#"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>native <span class="wordmark-slash">/</span> together</a><p>Native Mobile Template. A thoughtful starting point.</p></div><div class="footer-right"><a href="https://github.com/aldano-ark/reimagined-bassoon">Repository ↗</a><a href="https://github.com/aldano-ark/reimagined-bassoon/blob/main/AGENTS.md">Contributor guide ↗</a><span>Built with room to breathe.</span></div></footer>
+  </body>
+</html>
