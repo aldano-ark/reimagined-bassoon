@@ -93,12 +93,31 @@
             <p class="eyebrow">02 / Native by design</p>
             <h2 id="native-title">Same idea.<br>Each platform’s<br>own expression.</h2>
             <p>SwiftUI on iOS. Material 3 on Android. Shared component purposes, with the controls, typography, and interactions that feel at home on each device.</p>
-            <div class="example-note"><span class="example-tag">Design study</span><h3>A Pokémon collection, two ways.</h3><p>A supporting Figma example of collection and wishlist flows. This is a design exploration; the template currently ships the environment configuration example.</p></div>
-            <a class="text-link" href="https://www.figma.com/design/cCvOm5AHDpUjPgUlYnzuoO/Native-Android-and-iOS---Pokemon-Card-Collection?node-id=0-1">Explore the example in Figma <svg class="icon"><use href="#arrow-up-right"/></svg></a>
+            <div class="example-note"><span class="example-tag">Native example · preview</span><h3>A Pokémon collection, two ways.</h3><p>Track owned cards and a wishlist in two independent example apps. Seven bundled cards, saved locally, with the starter apps kept intact.</p></div>
+            <div class="example-links">
+              <a class="text-link" href="https://github.com/aldano-ark/reimagined-bassoon/tree/codex/pokemon-collection-example/examples/pokemon-collection">Open the example <svg class="icon"><use href="#arrow-up-right"/></svg></a>
+              <a class="text-link" href="https://www.figma.com/design/cCvOm5AHDpUjPgUlYnzuoO/Native-Android-and-iOS---Pokemon-Card-Collection?node-id=0-1">Explore the example in Figma <svg class="icon"><use href="#arrow-up-right"/></svg></a>
+            </div>
           </div>
-          <div class="phone-gallery">
-            <figure class="phone-figure ios-figure"><div class="phone-frame"><img src="./assets/ios-collection.webp" width="393" height="852" loading="lazy" alt="iOS Pokémon collection design with card artwork, collection counts, search, and native bottom navigation."></div><figcaption><span class="platform-dot ios-dot"></span>iOS <span>Figma concept</span></figcaption></figure>
-            <figure class="phone-figure android-figure"><div class="phone-frame android-frame"><img src="./assets/android-collection.webp" width="412" height="892" loading="lazy" alt="Android Pokémon collection design with the same cards, search, top tabs, and a bottom Add card action."></div><figcaption><span class="platform-dot android-dot"></span>Android <span>Figma concept</span></figcaption></figure>
+          <div class="native-preview">
+            <div class="phone-gallery">
+              <figure class="phone-figure ios-figure" id="example-demo">
+                <div class="phone-frame video-frame">
+                  <video controls playsinline preload="none" poster="./assets/pokemon-demo-poster.webp" width="720" height="1566" aria-label="iOS Pokémon Collection app walkthrough" aria-describedby="demo-description">
+                    <source src="./assets/pokemon-collection-demo.mp4" type="video/mp4">
+                    <track kind="captions" src="./assets/pokemon-demo-captions.vtt" srclang="en" label="English steps">
+                    Your browser does not support video playback. <a href="./assets/pokemon-collection-demo.mp4">Download the demo.</a>
+                  </video>
+                </div>
+                <figcaption><span class="platform-dot ios-dot"></span>iOS <span>35-second demo</span></figcaption>
+              </figure>
+              <figure class="phone-figure android-figure"><div class="phone-frame android-frame"><img src="./assets/android-collection.webp" width="1080" height="2424" loading="lazy" alt="Running Android Pokémon Collection app with saved Bulbasaur and Pikachu cards, native tabs, and an Add cards action."></div><figcaption><span class="platform-dot android-dot"></span>Android <span>Jetpack Compose app</span></figcaption></figure>
+            </div>
+            <div class="demo-notes">
+              <p id="demo-description">A real iOS walkthrough: find a card, save it to your wishlist, and add copies to your collection. Silent video with optional step captions.</p>
+              <div class="demo-links"><a href="./assets/pokemon-collection-demo.mp4" download>Download MP4</a><a href="https://github.com/aldano-ark/reimagined-bassoon/pull/3">View the example PR ↗</a></div>
+              <details class="demo-transcript"><summary>Read the walkthrough</summary><ol><li>Open the card catalog from the empty collection and search for Pikachu by its printed number, 25.</li><li>Open Pikachu’s details and save the card to the wishlist.</li><li>Add two copies, choose Reverse holo and Lightly played, and enter a note.</li><li>Save the entry. The collection shows one card and two copies, retained after reopening the app.</li></ol></details>
+            </div>
           </div>
         </div>
       </section>
