@@ -1,0 +1,20 @@
+#!/bin/sh
+# Example-only entry point. The starter's tooling and CI remain independent.
+set -u
+example_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 android|ios|all|assets" >&2
+    exit 2
+fi
+case "$1" in
+    assets) exec python3 -m unittest discover -s "$example_dir/tests" -v ;;
+    android|ios) exec "$example_dir/$1/scripts/verify" ;;
+    all)
+        result=0
+        for platform in assets android ios; do
+            "$0" "$platform" || { code=$?; if [ "$result" -eq 0 ]; then result=$code; fi; }
+        done
+        exit "$result"
+        ;;
+    *) echo "Usage: $0 android|ios|all|assets" >&2; exit 2 ;;
+esac
