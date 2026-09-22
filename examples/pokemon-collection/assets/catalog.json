@@ -1,0 +1,90 @@
+[
+  {
+    "id": "sv03.5-025",
+    "name": "Pikachu",
+    "number": "025",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Common",
+    "image": "card_025.png",
+    "finishes": [
+      "Normal",
+      "Reverse holo"
+    ]
+  },
+  {
+    "id": "sv03.5-001",
+    "name": "Bulbasaur",
+    "number": "001",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Common",
+    "image": "card_001.png",
+    "finishes": [
+      "Normal",
+      "Reverse holo"
+    ]
+  },
+  {
+    "id": "sv03.5-004",
+    "name": "Charmander",
+    "number": "004",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Common",
+    "image": "card_004.png",
+    "finishes": [
+      "Normal",
+      "Reverse holo"
+    ]
+  },
+  {
+    "id": "sv03.5-007",
+    "name": "Squirtle",
+    "number": "007",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Common",
+    "image": "card_007.png",
+    "finishes": [
+      "Normal",
+      "Reverse holo"
+    ]
+  },
+  {
+    "id": "sv03.5-199",
+    "name": "Charizard ex",
+    "number": "199",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Special illustration rare",
+    "image": "card_199.png",
+    "finishes": [
+      "Holo"
+    ]
+  },
+  {
+    "id": "sv03.5-200",
+    "name": "Blastoise ex",
+    "number": "200",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Special illustration rare",
+    "image": "card_200.png",
+    "finishes": [
+      "Holo"
+    ]
+  },
+  {
+    "id": "sv03.5-205",
+    "name": "Mew ex",
+    "number": "205",
+    "set": "151",
+    "printedTotal": 165,
+    "rarity": "Hyper rare",
+    "image": "card_205.png",
+    "finishes": [
+      "Holo"
+    ]
+  }
+]

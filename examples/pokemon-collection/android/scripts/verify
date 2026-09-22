@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+cd "$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+exec ./gradlew :features:collection:testDebugUnitTest :app:testDebugUnitTest :features:collection:lintDebug :features:collection:lintRelease :app:lintDebug :app:lintRelease :app:assembleDebug :app:assembleRelease "$@"
