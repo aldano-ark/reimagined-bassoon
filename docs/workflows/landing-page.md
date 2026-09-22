@@ -31,13 +31,17 @@ For a fork, update repository URLs in `site/index.html`, the quick-start clone c
 ## Assets
 
 - `assets/lakeside-dawn.webp`: original landscape generated for this page with OpenAI image generation; compressed from the generated PNG.
-- `assets/ios-collection.webp` and `assets/android-collection.webp`: exports of the existing Figma collection concepts, nodes `13:12` and `13:99`. Pokémon card imagery in those concepts came from [TCGdex](https://www.tcgdex.net/). These are supporting design examples, not evidence of implemented app features.
+- `assets/pokemon-collection-demo.mp4`: native iOS simulator recording of the implemented example, captured with `simctl` while XCTest drives the real UI. H.264 MP4 with a front-loaded index for web playback. It contains no audio and plays only when requested.
+- `assets/pokemon-demo-poster.webp` and `assets/pokemon-demo-captions.vtt`: an actual recording frame and timed walkthrough captions. The page also provides a written walkthrough and direct MP4 download.
+- `assets/android-collection.webp`: actual Android example screenshot, compressed from its native verification image. Card artwork in both apps comes from [TCGdex](https://www.tcgdex.net/); attribution is recorded in the [example assets guide](../../examples/pokemon-collection/assets/README.md). The recording and screenshot are supporting examples of the monorepo.
 - `assets/geist-variable.ttf`: Geist from [Google Fonts](https://github.com/google/fonts/tree/main/ofl/geist), self-hosted under the included `assets/Geist-OFL.txt` license.
 - `assets/favicon.svg`: the page’s paired-frame mark. Interface icons are simple inline SVG paths.
 
 ## Verification
 
 Check JavaScript syntax with `node --check site/assets/site.js`, verify local assets and anchor targets, and inspect the page at narrow mobile, tablet, and desktop widths. Exercise both setup tabs with pointer and keyboard, copy each command block, and check the clipboard-failure fallback. Confirm reduced-motion behavior and browser console/network results. Publishing succeeds only after the hosted Pages deployment completes and the public URL serves the intended content.
+
+For demo changes, decode the complete MP4, check codec/dimensions/duration and caption timing, then verify playback, pause, seeking, captions, the written walkthrough, and the download on the hosted page. Confirm that loading the landing page does not fetch the MP4 before the visitor starts playback. Attach the same MP4 to the example PR with `gh pr edit --attach`; an image-style Markdown reference to that local video, alone in its paragraph, is rewritten into GitHub's inline video attachment.
 
 Native checks are not applicable to a change confined to `site/` and explanatory Markdown; no native or shared build files are involved.
 

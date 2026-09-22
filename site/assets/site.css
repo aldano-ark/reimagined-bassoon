@@ -617,12 +617,24 @@ h2 {
   color:var(--muted);
 }
 
+.example-links {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:12px;
+  padding-top:8px;
+}
+
 .phone-gallery {
   display:flex;
   gap:24px;
   align-items:center;
   justify-content:center;
   padding:0 4px;
+}
+
+.native-preview {
+  min-width:0;
 }
 
 .phone-figure {
@@ -643,11 +655,68 @@ h2 {
   box-shadow:0 30px 45px -20px #3447535c,0 0 0 1px #bdcad3;
 }
 
-.phone-frame img {
+.phone-frame img,.phone-frame video {
   width:100%;
   height:auto;
+  display:block;
   border-radius:28px;
   background:white;
+}
+
+.phone-frame video {
+  aspect-ratio:720/1566;
+  object-fit:contain;
+}
+
+.video-frame {
+  background:#8ba69b;
+}
+
+#example-demo {
+  scroll-margin-top:30px;
+}
+
+.demo-notes {
+  max-width:530px;
+  margin:26px auto 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+}
+
+.demo-notes p {
+  margin:0 0 12px;
+}
+
+.demo-links {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 22px;
+}
+
+.demo-links a,.demo-transcript summary {
+  color:var(--ink);
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+
+.demo-transcript {
+  margin-top:16px;
+}
+
+.demo-transcript summary {
+  cursor:pointer;
+  width:fit-content;
+  padding:5px 0;
+}
+
+.demo-transcript ol {
+  margin:12px 0 0;
+  padding-left:20px;
+}
+
+.demo-transcript li+li {
+  margin-top:8px;
 }
 
 .android-frame {
@@ -1258,22 +1327,29 @@ h2 {
   .example-note p {
     font-size:13px;
   }
-  .native-copy>.text-link {
+  .example-links .text-link {
     font-size:13px;
   }
   .phone-gallery {
-    gap:15px;
+    flex-direction:column;
+    gap:28px;
     padding:0;
     width:100%;
   }
+  .phone-figure {
+    width:100%;
+    max-width:280px;
+    flex:none;
+  }
   .android-figure {
-    margin-top:44px;
+    max-width:220px;
+    margin-top:0;
   }
   .phone-frame {
     border-radius:24px;
     padding:3px;
   }
-  .phone-frame img {
+  .phone-frame img,.phone-frame video {
     border-radius:20px;
   }
   .android-frame {
@@ -1289,9 +1365,11 @@ h2 {
     margin:15px 2px 0;
   }
   .phone-figure figcaption>span:last-child {
-    width:100%;
-    margin-left:11px;
+    margin-left:auto;
     font-size:10px;
+  }
+  .demo-notes {
+    margin-top:24px;
   }
   .start-section {
     gap:32px;
