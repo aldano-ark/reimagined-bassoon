@@ -21,19 +21,23 @@ From the repository root:
 ./tooling/scripts/doctor ios
 ./tooling/scripts/build ios
 ./tooling/scripts/verify ios
+./tooling/scripts/test ios
 ```
 
-Use `all` instead of a platform to run both. Each platform command checks only its own prerequisites. `all` attempts both and fails if either fails. The shared commands use POSIX shell on macOS/Linux; Android also retains the normal Windows Gradle wrapper.
+For `doctor`, `build`, and `verify`, use `all` instead of a platform to run both. Each platform command checks only its own prerequisites. `all` attempts both and fails if either fails. These commands use POSIX shell on macOS/Linux; Android also retains the normal Windows Gradle wrapper.
 
-`build` selects dev Debug. `verify android` builds, lints, and unit-tests all six app variants and executes the design library's Robolectric component tests. `verify ios` compiles app/unit/UI tests for all three Debug configurations, builds all three Release configurations, and checks each app's identity and configuration. Execute iOS tests separately on a dedicated simulator; see the [iOS guide](apps/ios/README.md#execute-tests).
+`build` selects dev Debug. `verify android` builds, lints, and unit-tests all six app variants and executes the design library's Robolectric component tests. `verify ios` compiles app/unit/UI tests for all three Debug configurations, builds all three Release configurations, and checks each app's identity and configuration. `test ios` executes app and component tests on its own disposable simulator (dev by default; `test ios all` selects all three environments). The test runner requires Python 3.9+ and an installed iOS Simulator runtime; see the [iOS guide](apps/ios/README.md#execute-tests).
 
 Build outputs:
 
 - Android APK: `apps/android/app/build/outputs/apk/dev/debug/app-dev-debug.apk`
 - iOS app: `.build/ios/Build/Products/Debug-Dev-iphonesimulator/NativeTemplate.app`
 - Logs: `.build/logs/<platform>/<command>.log`
+- iOS test runs: `.build/ios-tests/<run>/` (logs, `.xcresult` bundles, summary, and separate DerivedData)
 
 The commands also work by absolute path from another working directory. One Android and one iOS build can run concurrently; concurrent builds of the same platform require separate checkouts/output directories. Native commands remain documented in the platform READMEs.
+
+[GitHub Actions](docs/workflows/github-actions.md) runs independent tooling, Android, and iOS checks on pull requests and pushes to `main`, and retains test evidence for 14 days. The iOS job also executes `test ios all` on GitHub's Xcode 27 preview runner.
 
 ## Environment configuration
 
@@ -73,6 +77,6 @@ A task defines its scope and authorized completion boundary. Contributors implem
 2. Rename the Android application and iOS target using their platform README checklists. Update shared command/test artifact paths when changing target names.
 3. Write the first feature's behavior in `docs/specs/`, including applicable platforms and acceptance criteria.
 4. Add feature modules/packages as needed and keep dependency direction explicit.
-5. Replace the dummy endpoints in both native configuration sets, then add CI, signing, and store assets when the product needs them.
+5. Replace the dummy endpoints in both native configuration sets, review the included GitHub Actions workflow for your repository, and add signing and store assets when the product needs them.
 
 See the [architecture](docs/architecture/overview.md), [toolchain baseline](docs/architecture/toolchains.md), and [measured verification record](docs/workflows/verification-2026-09-20.md). This template does not select a license for your product; choose one appropriate to its use and preserve third-party notices such as the Gradle wrapper's license headers.

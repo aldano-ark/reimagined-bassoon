@@ -1,0 +1,15 @@
+#!/bin/sh
+set -u
+usage() {
+    printf 'Usage: %s ios [dev|stg|prod|all]\n' "$0" >&2
+    exit 2
+}
+[ "$#" -ge 1 ] && [ "$#" -le 2 ] || usage
+[ "$1" = ios ] || usage
+case "${2:-dev}" in dev|stg|prod|all) ;; *) usage ;; esac
+NATIVE_SCRIPT_DIR=$(CDPATH= cd -P "$(dirname "$0")" && pwd) || exit 1
+command -v python3 >/dev/null 2>&1 || {
+    printf 'Error: Python 3 is required for the iOS test runner.\n' >&2
+    exit 1
+}
+exec python3 "$NATIVE_SCRIPT_DIR/ios_tests.py" "${2:-dev}"
