@@ -40,3 +40,5 @@ For a fork, update repository URLs in `site/index.html`, the quick-start clone c
 Check JavaScript syntax with `node --check site/assets/site.js`, verify local assets and anchor targets, and inspect the page at narrow mobile, tablet, and desktop widths. Exercise both setup tabs with pointer and keyboard, copy each command block, and check the clipboard-failure fallback. Confirm reduced-motion behavior and browser console/network results. Publishing succeeds only after the hosted Pages deployment completes and the public URL serves the intended content.
 
 Native checks are not applicable to a change confined to `site/` and explanatory Markdown; no native or shared build files are involved.
+
+See the [measured landing-page verification](landing-page-verification-2026-09-22.md) for results and limitations.
